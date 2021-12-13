@@ -41,8 +41,8 @@ public class DriveToEnd extends LinearOpMode {
      * 4. done
      */
 
-    private DcMotor FL, FR, BL, BR, armMotor, flywheel;
-    private Servo gripperServo;
+    private DcMotor FL, FR, BL, BR, arm, flywheel;
+    private Servo gripper;
     private BNO055IMU imu;
     private Orientation angles;
 
@@ -73,15 +73,15 @@ public class DriveToEnd extends LinearOpMode {
         FR = hardwareMap.get(DcMotor.class, "FR");
         BR = hardwareMap.get(DcMotor.class, "BR");
         BL = hardwareMap.get(DcMotor.class, "BL");
-        armMotor = hardwareMap.get(DcMotor.class, "arm");
-        gripperServo = hardwareMap.get(Servo.class, "gripper");
+        arm = hardwareMap.get(DcMotor.class, "arm");
+        gripper = hardwareMap.get(Servo.class, "gripper");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
 
         FL.setDirection(DcMotor.Direction.FORWARD);
         BL.setDirection(DcMotor.Direction.FORWARD);
         FR.setDirection(DcMotor.Direction.REVERSE);
         BR.setDirection(DcMotor.Direction.REVERSE);
-        armMotor.setDirection(DcMotor.Direction.REVERSE);
+        arm.setDirection(DcMotor.Direction.REVERSE);
         flywheel.setDirection(DcMotor.Direction.REVERSE);
 
 
