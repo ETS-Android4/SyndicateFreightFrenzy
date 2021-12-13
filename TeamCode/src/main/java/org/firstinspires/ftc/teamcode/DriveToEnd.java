@@ -249,7 +249,6 @@ public class DriveToEnd extends LinearOpMode {
         return num >= target - error && num <= target + error;
     }
 
-
     /**
      * Returns true or false if the robot should turn left or right.
      * Precondition: Both parameters are >= 0 and < 360
@@ -258,15 +257,20 @@ public class DriveToEnd extends LinearOpMode {
      * @return true if the robot should turn left, false if it should turn right
      */
     boolean shouldTurnLeft(double currentAngle, double targetAngle) {
-        double angle1 = currentAngle;
-        double angle2 = angle1 + 180;
-        if(angle2 >= 360) angle2 -= 360;
-        double newTargetAngle = targetAngle;
-        if(angle1 < 180) {
-            angle1 += 360;
-            if(newTargetAngle >= 0 && newTargetAngle <= currentAngle) newTargetAngle += 360;
+        //Min and Max angles. Min = current angle, Max = current angle + 180
+        double a1 = currentAngle;
+        double a2 = a1 + 180; 
+        
+        if(a2 >= 360) a2 -= 360; // make sure a2 is from 0-359
+        double theta = targetAngle;
+        //If a1 is less than 180, add 360. This way a1 will not be less than a2
+        if(a1 < 180) {
+            a1 += 360;
+            //Add 360 to theta if it's between 0 and the original angle
+            if(theta >= 0 && theta <= currentAngle) theta += 360;
         }
-        return newTargetAngle >= angle2 && newTargetAngle <= angle1;
+        //true if theta is >=a2 and <=a1
+        return theta >= a2 && theta <= a1;
     }
 
 
