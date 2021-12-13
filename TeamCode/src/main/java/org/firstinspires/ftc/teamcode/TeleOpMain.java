@@ -101,9 +101,9 @@ public class TeleOpMain extends LinearOpMode {
 
                 gripper.setPosition(0.915);
             }
-        } //declared in loop 
+        } 
         telemetry.addData("Direction State:", directionState);
-        telemetry.addData("dpad_right_count:", count);
+        telemetry.addData("dpad_right_count:", dpad_right_count);
     }
     void flywheelControl() {
         int dpad_left_count = 0; 
@@ -123,8 +123,8 @@ public class TeleOpMain extends LinearOpMode {
 
                 flywheel.setPower(0);
             }
-        } //declared in loop 
+        } 
         telemetry.addData("Direction State:", directionState);
-        telemetry.addData("dpad_right_count:", count);
+        telemetry.addData("dpad_left_count:", dpad_left_count);
     }
 }
