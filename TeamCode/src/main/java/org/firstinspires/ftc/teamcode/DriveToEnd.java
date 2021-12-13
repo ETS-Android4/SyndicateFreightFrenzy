@@ -248,6 +248,15 @@ public class DriveToEnd extends LinearOpMode {
     private boolean isInRange(double num, double target, double error) {
         return num >= target - error && num <= target + error;
     }
+    /**
+     * Checks if double x is between min and Max
+     * @param x the input to check
+     * @param min the min
+     * @param the max
+     */
+    boolean isBetween(double x, double min, double max) {
+        return x >= min && x <= max;
+    }
 
     /**
      * Returns true or false if the robot should turn left or right.
@@ -267,10 +276,10 @@ public class DriveToEnd extends LinearOpMode {
         if(a1 < 180) {
             a1 += 360;
             //Add 360 to theta if it's between 0 and the original angle
-            if(theta >= 0 && theta <= currentAngle) theta += 360;
+            if(isBetween(theta, 0, currentAngle)) theta += 360;
         }
         //true if theta is >=a2 and <=a1
-        return theta >= a2 && theta <= a1;
+        return isBetween(theta, a2, a1);
     }
 
 
