@@ -33,7 +33,7 @@ public class AutoMain extends LinearOpMode {
 
 
 
-    private DcMotor frontLeft, frontRight, backLeft, backRight, armMotor, flywheel;
+    private DcMotor FL, FR, BL, BR, armMotor, flywheel;
     private Servo gripperServo;
     private BNO055IMU imu;
     private Orientation angles;
@@ -51,31 +51,214 @@ public class AutoMain extends LinearOpMode {
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
-        frontLeft  = hardwareMap.get(DcMotor.class, "FL");
-        frontRight = hardwareMap.get(DcMotor.class, "FR");
-        backRight = hardwareMap.get(DcMotor.class, "BR");
-        backLeft = hardwareMap.get(DcMotor.class, "BL");
+        FL  = hardwareMap.get(DcMotor.class, "FL");
+        FR = hardwareMap.get(DcMotor.class, "FR");
+        BR = hardwareMap.get(DcMotor.class, "BR");
+        BL = hardwareMap.get(DcMotor.class, "BL");
         armMotor = hardwareMap.get(DcMotor.class, "arm");
         gripperServo = hardwareMap.get(Servo.class, "gripper");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
 
-        frontLeft.setDirection(DcMotor.Direction.REVERSE);
-        backLeft.setDirection(DcMotor.Direction.REVERSE);
-        frontRight.setDirection(DcMotor.Direction.FORWARD);
-        backRight.setDirection(DcMotor.Direction.FORWARD);
+        FL.setDirection(DcMotor.Direction.REVERSE);
+        BL.setDirection(DcMotor.Direction.REVERSE);
+        FR.setDirection(DcMotor.Direction.FORWARD);
+        BR.setDirection(DcMotor.Direction.FORWARD);
         armMotor.setDirection(DcMotor.Direction.FORWARD);
         flywheel.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        BL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        FL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        BR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        FR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
         waitForStart();
         while (opModeIsActive()) {
             idle();
         }
+    }
+    public void turn(double angle) {
+
+        imu.update();
+        double target = IMU.normalizeAngle(imu.getAngle() + angle);
+
+        double left, right;
+
+        boolean exit = false;
+        boolean negative = target < imu.getAngle() && target - imu.getAngle() < 180;
+        ElapsedTime timeout = new ElapsedTime();
+
+        while (imu.getAngle() < target - .08 || imu.getAngle() > target + .08) {
+
+            imu.update();
+            left = -bound(Kt * (target - imu.getAngle()) * (target - imu.getAngle() > 180 || target - imu.getAngle() < -180 ? -1 : 1), .18, .6, false);
+            right = -left;
+
+            if (!exit) {
+                if (negative && left < 0 || !negative && left > 0) {
+                    exit = true;
+                    timeout.reset();
+                }
+            }
+
+            powerMotors(left, FL, BL);
+            powerMotors(right, FR, BR);
+
+            telemetry.addData("angle", imu.getAngle());
+            telemetry.update();
+
+        }
+
+        stopAllMotors();
+
+    }
+    public void powerMotors(double speed, DcMotor... motors) {
+        for (DcMotor motor : motors) {
+            motor.setPower(speed);
+        }
+    }
+    public void stopAllMotors() {
+        powerAllMotors(0);
+    }
+    public void drive(int distance, double targetAngle) {
+
+        resetEncoders();
+        double target = getEncoder() + distance;
+
+        double left, right;
+
+        boolean exit = false;
+        boolean negative = target < 0;
+
+        ElapsedTime timeout = new ElapsedTime();
+
+        while (getEncoder() < target - 12 || getEncoder() > target + 12) {
+
+            if (exit && timeout.time(TimeUnit.MILLISECONDS) > 500) {
+                break;
+            }
+
+            // proportional drive
+            left = bound(.005 * (target - getEncoder()), .18, .8, false);
+            right = left;
+
+            if (!exit) {
+                if (negative && left > 0 || !negative && left < 0) {
+                    exit = true;
+                    timeout.reset();
+                }
+            }
+
+            imu.update();
+            double imuError = targetAngle - imu.getAngle(); // assume 0 -> 360 is clockwise
+            left -= .05 * imuError;
+            right += .05 * imuError;
+
+            powerMotors(left, FL, BL);
+            powerMotors(right, FR, BR);
+
+            telemetry.addData("left", FL.getCurrentPosition());
+            telemetry.addData("right", BR.getCurrentPosition());
+            telemetry.addData("lp", left);
+            telemetry.addData("rp", right);
+            telemetry.addData("imu", imuError);
+            telemetry.update();
+
+        }
+
+        stopAllMotors();
+    }
+    public void driveCool(int distance, double targetAngle, double speed) {
+
+        resetEncoders();
+        double target = getEncoder() + distance;
+
+        double left, right;
+
+        boolean condition = true;
+
+        while (condition) {
+
+            // proportional drive
+            left = speed * (distance < 0 ? -1 : 1);
+            right = left;
+
+            imu.update();
+            double imuError = targetAngle - imu.getAngle(); // assume 0 -> 360 is clockwise
+            left -= .03 * imuError;
+            right += .03 * imuError;
+
+            powerMotors(left, FL, BL);
+            powerMotors(right, FR, BR);
+
+            telemetry.addData("left", FL.getCurrentPosition());
+            telemetry.addData("right", BR.getCurrentPosition());
+            telemetry.addData("lp", left);
+            telemetry.addData("rp", right);
+            telemetry.addData("imu", imuError);
+            telemetry.update();
+
+            if (target < 0) {
+                condition = getEncoder() > target;
+            } else {
+                condition = getEncoder() < target;
+            }
+
+        }
+
+        stopAllMotors();
+
+    }
+    public void resetEncoders() {
+        for (DcMotor motor : motors) {
+            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+    }
+    public void turnCool(double angle, double speed) {
+
+        imu.update();
+        double target = IMU.normalizeAngle(imu.getAngle() + angle);
+
+        double left, right;
+
+        boolean condition = true;
+
+        while (condition) {
+
+            imu.update();
+            left = -speed * (angle < 0 ? -1 : 1);
+            right = speed * (angle < 0 ? -1 : 1);
+
+            powerMotors(left, FL, BL);
+            powerMotors(right, FR, BR);
+
+            telemetry.addData("angle", imu.getAngle());
+            telemetry.update();
+
+            if (angle < 0) {
+                condition = imu.getAngle() > target;
+            } else {
+                condition = imu.getAngle() < target;
+            }
+
+        }
+
+        stopAllMotors();
+
+    }
+    public double getEncoder() {
+        double sum = 0;
+        for (DcMotor motor : motors) {
+            sum += motor.getCurrentPosition();
+        }
+        return sum/motors.length;
+    }
+    public double bound(double value, double min, double max, boolean signed) {
+        if (!signed && value >= 0)
+            return Math.max(min, Math.min(value, max));
+        else
+            return Math.max(-max, Math.min(value, -min));
     }
 
 }
