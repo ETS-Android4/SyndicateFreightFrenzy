@@ -41,12 +41,12 @@ public class DriveToEnd extends LinearOpMode {
      * 4. done
      */
 
-    private DcMotor frontLeft, frontRight, backLeft, backRight, armMotor, flywheel;
-    private Servo gripperServo;
+    private DcMotor FL, FR, BL, BR, arm, flywheel;
+    private Servo gripper;
     private BNO055IMU imu;
     private Orientation angles;
 
-    private double power = 0.25;
+    private double power = 0.5;
 
 
     //If we're allowed to change code before hand just change this variable ig
@@ -69,26 +69,27 @@ public class DriveToEnd extends LinearOpMode {
         imu.initialize(parameters);
 
 
-        frontLeft  = hardwareMap.get(DcMotor.class, "FL");
-        frontRight = hardwareMap.get(DcMotor.class, "FR");
-        backRight = hardwareMap.get(DcMotor.class, "BR");
-        backLeft = hardwareMap.get(DcMotor.class, "BL");
-        armMotor = hardwareMap.get(DcMotor.class, "arm");
-        gripperServo = hardwareMap.get(Servo.class, "gripper");
+        FL  = hardwareMap.get(DcMotor.class, "FL");
+        FR = hardwareMap.get(DcMotor.class, "FR");
+        BR = hardwareMap.get(DcMotor.class, "BR");
+        BL = hardwareMap.get(DcMotor.class, "BL");
+        arm = hardwareMap.get(DcMotor.class, "arm");
+        gripper = hardwareMap.get(Servo.class, "gripper");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
 
-        frontLeft.setDirection(DcMotor.Direction.FORWARD);
-        backLeft.setDirection(DcMotor.Direction.FORWARD);
-        frontRight.setDirection(DcMotor.Direction.REVERSE);
-        backRight.setDirection(DcMotor.Direction.REVERSE);
-        armMotor.setDirection(DcMotor.Direction.REVERSE);
+        FL.setDirection(DcMotor.Direction.FORWARD);
+        BL.setDirection(DcMotor.Direction.FORWARD);
+        FR.setDirection(DcMotor.Direction.REVERSE);
+        BR.setDirection(DcMotor.Direction.REVERSE);
+        arm.setDirection(DcMotor.Direction.REVERSE);
+        flywheel.setDirection(DcMotor.Direction.REVERSE);
 
 
 
-        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        BL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        FL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        BR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        FR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //Telemetry info
         composeTelemetry();
@@ -145,17 +146,17 @@ public class DriveToEnd extends LinearOpMode {
 
         if(shouldTurnLeft(originalAngle, targetAngle)) {
             //Left negative Right positive
-            frontLeft.setPower(-power);
-            backLeft.setPower(-power);
-            frontRight.setPower(power);
-            backRight.setPower(power);
+            FL.setPower(-power);
+            BL.setPower(-power);
+            FR.setPower(power);
+            BR.setPower(power);
         }
         else {
             //Right negative left positive
-            frontLeft.setPower(power);
-            backLeft.setPower(power);
-            frontRight.setPower(-power);
-            backRight.setPower(-power);
+            FL.setPower(power);
+            BL.setPower(power);
+            FR.setPower(-power);
+            BR.setPower(-power);
         }
         //Turn until target angle met
         while(opModeIsActive() && !isInRange(originalAngle, targetAngle, error)) {}
@@ -169,10 +170,10 @@ public class DriveToEnd extends LinearOpMode {
      * @param power Power of the motors. -1.0 - 1.0
      */
     void driveForward(double power) {
-        frontLeft.setPower(power);
-        backLeft.setPower(power);
-        frontRight.setPower(power);
-        backRight.setPower(power);
+        FL.setPower(power);
+        BL.setPower(power);
+        FR.setPower(power);
+        BR.setPower(power);
     }
 
     /**
@@ -182,18 +183,18 @@ public class DriveToEnd extends LinearOpMode {
      */
     void driveForward(double power, int ticks) {
         resetEncoders();
-        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        FL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        FR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        BL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        BR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        frontLeft.setTargetPosition(ticks);
-        frontRight.setTargetPosition(ticks);
-        backLeft.setTargetPosition(ticks);
-        backRight.setTargetPosition(ticks);
+        FL.setTargetPosition(ticks);
+        FR.setTargetPosition(ticks);
+        BL.setTargetPosition(ticks);
+        BR.setTargetPosition(ticks);
 
         driveForward(power);
-        while(frontLeft.getCurrentPosition() < frontLeft.getTargetPosition() && opModeIsActive()) {}
+        while(FL.getCurrentPosition() < FL.getTargetPosition() && opModeIsActive()) {}
         stopMotors();
         resetEncoders();
     }
@@ -203,28 +204,31 @@ public class DriveToEnd extends LinearOpMode {
      * Sets all drivetrain motor powers to 0
      */
     void stopMotors() {
-        frontLeft.setPower(0);
-        backLeft.setPower(0);
-        frontRight.setPower(0);
-        backRight.setPower(0);
+        FL.setPower(0);
+        BL.setPower(0);
+        FR.setPower(0);
+        BR.setPower(0);
     }
 
     /**
      * Resets all drivetrain encoders
      */
     void resetEncoders() {
-        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
+        setDrivetrainMode(DcMotor.RunMode.RUN_USING_ENCODERS, true);
     }
-
+    /**
+     * Sets the mode to whatever mode is specified
+     * @param mode The mode that's set (STOP_AND_RESET_ENCODER, RUN_TO_POSITION, etc)
+     * @param resetEncoders Set to true to reset the encoders along with whatever else you're doing
+     */
+    void setDrivetrainMode(DcMotor.RunMode mode, boolean resetEncoders) {
+        if(resetEncoders) setDrivetrainMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER, false);
+        
+        FL.setMode(mode);
+        FR.setMode(mode);
+        BL.setMode(mode);
+        BR.setMode(mode);
+    }
 
     /**
      * Updates the angle when called
@@ -244,7 +248,15 @@ public class DriveToEnd extends LinearOpMode {
     private boolean isInRange(double num, double target, double error) {
         return num >= target - error && num <= target + error;
     }
-
+    /**
+     * Checks if double x is between min and Max
+     * @param x the input to check
+     * @param min the min
+     * @param the max
+     */
+    boolean isBetween(double x, double min, double max) {
+        return x >= min && x <= max;
+    }
 
     /**
      * Returns true or false if the robot should turn left or right.
@@ -254,15 +266,20 @@ public class DriveToEnd extends LinearOpMode {
      * @return true if the robot should turn left, false if it should turn right
      */
     boolean shouldTurnLeft(double currentAngle, double targetAngle) {
-        double angle1 = currentAngle;
-        double angle2 = angle1 + 180;
-        if(angle2 >= 360) angle2 -= 360;
-        double newTargetAngle = targetAngle;
-        if(angle1 < 180) {
-            angle1 += 360;
-            if(newTargetAngle >= 0 && newTargetAngle <= currentAngle) newTargetAngle += 360;
+        //Min and Max angles. Min = current angle, Max = current angle + 180
+        double a1 = currentAngle;
+        double a2 = a1 + 180; 
+        
+        if(a2 >= 360) a2 -= 360; // make sure a2 is from 0-359
+        double theta = targetAngle;
+        //If a1 is less than 180, add 360. This way a1 will not be less than a2
+        if(a1 < 180) {
+            a1 += 360;
+            //Add 360 to theta if it's between 0 and the original angle
+            if(isBetween(theta, 0, currentAngle)) theta += 360;
         }
-        return newTargetAngle >= angle2 && newTargetAngle <= angle1;
+        //true if theta is >=a2 and <=a1
+        return isBetween(theta, a2, a1);
     }
 
 
