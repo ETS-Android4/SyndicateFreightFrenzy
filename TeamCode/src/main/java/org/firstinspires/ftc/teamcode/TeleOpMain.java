@@ -22,6 +22,8 @@ public class TeleOpMain extends LinearOpMode {
             mainDriveControl();
             microDrive();
             armControl();
+            gripperControl();
+            flywheelControl();
         }
     }
     void initialize() {
