@@ -92,7 +92,7 @@ public class AutoMain extends LinearOpMode {
         while (imu.getAngle() < target - .08 || imu.getAngle() > target + .08) {
 
             imu.update();
-            left = -bound(Kt * (target - imu.getAngle()) * (target - imu.getAngle() > 180 || target - imu.getAngle() < -180 ? -1 : 1), .18, .6, false);
+            left = -approx(Kt * (target - imu.getAngle()) * (target - imu.getAngle() > 180 || target - imu.getAngle() < -180 ? -1 : 1), .18, .6, false);
             right = -left;
 
             if (!exit) {
@@ -110,7 +110,7 @@ public class AutoMain extends LinearOpMode {
 
         }
 
-        stopAllMotors();
+        stopMotors();
 
     }
     public void powerMotors(double speed, DcMotor... motors) {
@@ -118,7 +118,7 @@ public class AutoMain extends LinearOpMode {
             motor.setPower(speed);
         }
     }
-    public void stopAllMotors() {
+    public void stopMotors() {
         powerAllMotors(0);
     }
     public void drive(int distance, double targetAngle) {
@@ -140,7 +140,7 @@ public class AutoMain extends LinearOpMode {
             }
 
             // proportional drive
-            left = bound(.005 * (target - getEncoder()), .18, .8, false);
+            left = approx(.005 * (target - getEncoder()), .18, .8, false);
             right = left;
 
             if (!exit) {
@@ -167,9 +167,9 @@ public class AutoMain extends LinearOpMode {
 
         }
 
-        stopAllMotors();
+        stopMotors();
     }
-    public void driveCool(int distance, double targetAngle, double speed) {
+    public void driveSpeed(int distance, double targetAngle, double speed) {
 
         resetEncoders();
         double target = getEncoder() + distance;
@@ -207,7 +207,7 @@ public class AutoMain extends LinearOpMode {
 
         }
 
-        stopAllMotors();
+        stopMotors();
 
     }
     public void resetEncoders() {
@@ -216,7 +216,7 @@ public class AutoMain extends LinearOpMode {
             motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
     }
-    public void turnCool(double angle, double speed) {
+    public void turnSpeed(double angle, double speed) {
 
         imu.update();
         double target = IMU.normalizeAngle(imu.getAngle() + angle);
@@ -245,7 +245,7 @@ public class AutoMain extends LinearOpMode {
 
         }
 
-        stopAllMotors();
+        stopMotors();
 
     }
     public double getEncoder() {
@@ -255,7 +255,7 @@ public class AutoMain extends LinearOpMode {
         }
         return sum/motors.length;
     }
-    public double bound(double value, double min, double max, boolean signed) {
+    public double approx(double value, double min, double max, boolean signed) {
         if (!signed && value >= 0)
             return Math.max(min, Math.min(value, max));
         else
