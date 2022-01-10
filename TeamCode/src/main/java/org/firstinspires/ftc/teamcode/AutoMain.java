@@ -74,6 +74,7 @@ public class AutoMain extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
+            gripper.setPosition(1);
             idle();
         }
     }
