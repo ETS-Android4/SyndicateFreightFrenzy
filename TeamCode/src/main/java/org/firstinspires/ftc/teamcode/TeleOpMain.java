@@ -19,8 +19,8 @@ public class TeleOpMain extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()) {
-            mainDriveControl();
-            microDrive();
+            driveControl();
+            dpadDrive();
             armControl();
             gripperControl();
             flywheelControl();
@@ -47,7 +47,7 @@ public class TeleOpMain extends LinearOpMode {
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
 
     }
-    void mainDriveControl() {
+    void driveControl() {
 
         double LY = gamepad1.left_stick_y;
         double RY = gamepad1.right_stick_y;
@@ -58,7 +58,7 @@ public class TeleOpMain extends LinearOpMode {
         BR.setPower(RY);
 
     }
-    void microDrive() {
+    void dpadDrive() {
         if (gamepad1.dpad_up) {
             FL.setPower(-.4);
             FR.setPower(-.4);
