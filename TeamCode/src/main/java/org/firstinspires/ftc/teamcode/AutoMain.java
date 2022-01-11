@@ -48,7 +48,7 @@ public class AutoMain extends LinearOpMode {
         parameters.loggingEnabled      = true;
         parameters.loggingTag          = "IMU";
         
-        angles = imu.getAngularOrientation();
+        angles = getAngularOrientation();
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
@@ -89,19 +89,19 @@ public class AutoMain extends LinearOpMode {
     }
     public void turn(double angle) {
 
-        imu.update();
-        double target = imu.normalizeAngle(imu.getAngle() + angle);
+        update();
+        double target = normalizeAngle(getAngle() + angle);
 
         double left, right;
 
         boolean exit = false;
-        boolean negative = target < imu.getAngle() && target - imu.getAngle() < 180;
+        boolean negative = target < getAngle() && target - getAngle() < 180;
         ElapsedTime timeout = new ElapsedTime();
 
-        while (imu.getAngle() < target - .08 || imu.getAngle() > target + .08) {
+        while (getAngle() < target - .08 || getAngle() > target + .08) {
 
-            imu.update();
-            left = -approx(Kt * (target - imu.getAngle()) * (target - imu.getAngle() > 180 || target - imu.getAngle() < -180 ? -1 : 1), .18, .6, false);
+            update();
+            left = -approx(Kt * (target - getAngle()) * (target - getAngle() > 180 || target - getAngle() < -180 ? -1 : 1), .18, .6, false);
             right = -left;
 
             if (!exit) {
@@ -114,7 +114,7 @@ public class AutoMain extends LinearOpMode {
             powerMotors(left, FL, BL);
             powerMotors(right, FR, BR);
 
-            telemetry.addData("angle", imu.getAngle());
+            telemetry.addData("angle", getAngle());
             telemetry.update();
 
         }
@@ -162,8 +162,8 @@ public class AutoMain extends LinearOpMode {
                 }
             }
 
-            imu.update();
-            double imuError = targetAngle - imu.getAngle(); // assume 0 -> 360 is clockwise
+            update();
+            double imuError = targetAngle - getAngle(); // assume 0 -> 360 is clockwise
             left -= .05 * imuError;
             right += .05 * imuError;
 
@@ -182,7 +182,7 @@ public class AutoMain extends LinearOpMode {
         stopMotors();
     }
     public void update() {
-        angles = imu.getAngularOrientation();
+        angles = getAngularOrientation();
     }
     public void driveSpeed(int distance, double targetAngle, double speed) {
 
@@ -200,7 +200,7 @@ public class AutoMain extends LinearOpMode {
             right = left;
 
             update();
-            double imuError = targetAngle - imu.getAngle(); // assume 0 -> 360 is clockwise
+            double imuError = targetAngle - getAngle(); // assume 0 -> 360 is clockwise
             left -= .03 * imuError;
             right += .03 * imuError;
 
@@ -233,8 +233,8 @@ public class AutoMain extends LinearOpMode {
     }
     public void turnSpeed(double angle, double speed) {
 
-        imu.update();
-        double target = IMU.normalizeAngle(imu.getAngle() + angle);
+        update();
+        double target = normalizeAngle(getAngle() + angle);
 
         double left, right;
 
@@ -242,20 +242,20 @@ public class AutoMain extends LinearOpMode {
 
         while (condition) {
 
-            imu.update();
+            update();
             left = -speed * (angle < 0 ? -1 : 1);
             right = speed * (angle < 0 ? -1 : 1);
 
             powerMotors(left, FL, BL);
             powerMotors(right, FR, BR);
 
-            telemetry.addData("angle", imu.getAngle());
+            telemetry.addData("angle", getAngle());
             telemetry.update();
 
             if (angle < 0) {
-                condition = imu.getAngle() > target;
+                condition = getAngle() > target;
             } else {
-                condition = imu.getAngle() < target;
+                condition = getAngle() < target;
             }
 
         }
