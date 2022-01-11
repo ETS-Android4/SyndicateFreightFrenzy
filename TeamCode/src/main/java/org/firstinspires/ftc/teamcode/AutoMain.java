@@ -47,7 +47,7 @@ public class AutoMain extends LinearOpMode {
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; //Is this built in? Hopefully
         parameters.loggingEnabled      = true;
         parameters.loggingTag          = "IMU";
-        
+
         angles = getAngularOrientation();
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
@@ -226,10 +226,14 @@ public class AutoMain extends LinearOpMode {
 
     }
     public void resetEncoders() {
-        for (DcMotor motor : motors) {
-            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        }
+        FL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        BL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        BR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
     public void turnSpeed(double angle, double speed) {
 
@@ -265,10 +269,11 @@ public class AutoMain extends LinearOpMode {
     }
     public double getEncoder() {
         double sum = 0;
-        for (DcMotor motor : motors) {
-            sum += motor.getCurrentPosition();
-        }
-        return sum/motors.length;
+        sum += FL.getCurrentPosition();
+        sum += BL.getCurrentPosition();
+        sum += FR.getCurrentPosition();
+        sum += BR.getCurrentPosition();
+        return sum/4;
     }
     public double approx(double value, double min, double max, boolean signed) {
         if (!signed && value >= 0)
