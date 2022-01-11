@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.BNO055;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -47,7 +47,8 @@ public class AutoMain extends LinearOpMode {
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; //Is this built in? Hopefully
         parameters.loggingEnabled      = true;
         parameters.loggingTag          = "IMU";
-
+        
+        angles = imu.getAngularOrientation();
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
@@ -78,10 +79,18 @@ public class AutoMain extends LinearOpMode {
             idle();
         }
     }
+    public static double normalizeAngle(double angle) {
+        if (angle < -180) {
+            return normalizeAngle(angle + 360);
+        } else if (angle > 180) {
+            return normalizeAngle(angle - 360);
+        }
+        return angle;
+    }
     public void turn(double angle) {
 
         imu.update();
-        double target = IMU.normalizeAngle(imu.getAngle() + angle);
+        double target = imu.normalizeAngle(imu.getAngle() + angle);
 
         double left, right;
 
@@ -112,6 +121,9 @@ public class AutoMain extends LinearOpMode {
 
         stopMotors();
 
+    }
+    public double getAngle() {
+        return angles.firstAngle;
     }
     public void powerMotors(double speed, DcMotor... motors) {
         for (DcMotor motor : motors) {
@@ -169,6 +181,9 @@ public class AutoMain extends LinearOpMode {
 
         stopMotors();
     }
+    public void update() {
+        angles = imu.getAngularOrientation();
+    }
     public void driveSpeed(int distance, double targetAngle, double speed) {
 
         resetEncoders();
@@ -184,7 +199,7 @@ public class AutoMain extends LinearOpMode {
             left = speed * (distance < 0 ? -1 : 1);
             right = left;
 
-            imu.update();
+            update();
             double imuError = targetAngle - imu.getAngle(); // assume 0 -> 360 is clockwise
             left -= .03 * imuError;
             right += .03 * imuError;
