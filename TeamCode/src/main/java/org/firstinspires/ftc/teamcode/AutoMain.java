@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import org.firstinspires.ftc.teamcode.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 enum StartPosition {
@@ -37,6 +36,13 @@ public class AutoMain extends LinearOpMode {
     private Servo gripperServo;
  
     private Orientation angles;
+    
+    BNO055IMU imu;
+    Orientation angles;
+    static final double Kp = .001;
+    imu = hardwareMap.get(BNO055IMU.class, "imu");
+    imu.initialize(initialize());
+    angles = imu.getAngularOrientation();
 
     @Override
     public void runOpMode() {
@@ -68,6 +74,34 @@ public class AutoMain extends LinearOpMode {
             idle();
         }
     }
+    public static double normalizeAngle(double angle) {
+        if (angle < -180) {
+            return normalizeAngle(angle + 360);
+        } else if (angle > 180) {
+            return normalizeAngle(angle - 360);
+        }
+        return angle;
+    }
+    BNO055IMU.Parameters initialize() {
+
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json";
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
+
+        return parameters;
+
+    }
+
+    public double getAngle() {
+        return angles.firstAngle;
+    }
+
+    public void update() {
+        angles = imu.getAngularOrientation();
+    }
+
     public void turn(double angle) {
 
         update();
