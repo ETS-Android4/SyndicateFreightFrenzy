@@ -126,8 +126,10 @@ public class AutoMain extends LinearOpMode {
                 }
             }
 
-            powerMotors(left, FL, BL);
-            powerMotors(right, FR, BR);
+FL.setPower(left);
+BL.setPower(left);
+BR.setPower(right);
+FR.setPower(right);
 
             telemetry.addData("angle", getAngle());
             telemetry.update();
@@ -136,11 +138,6 @@ public class AutoMain extends LinearOpMode {
 
         stopMotors();
 
-    }
-    public void powerMotors(double speed, DcMotor... motors) {
-        for (DcMotor motor : motors) {
-            motor.setPower(speed);
-        }
     }
     public void stopMotors() {
         powerAllMotors(0);
@@ -179,8 +176,10 @@ public class AutoMain extends LinearOpMode {
             left -= .05 * imuError;
             right += .05 * imuError;
 
-            powerMotors(left, FL, BL);
-            powerMotors(right, FR, BR);
+           FL.setPower(left);
+BL.setPower(left);
+BR.setPower(right);
+FR.setPower(right);
 
             telemetry.addData("left", FL.getCurrentPosition());
             telemetry.addData("right", BR.getCurrentPosition());
