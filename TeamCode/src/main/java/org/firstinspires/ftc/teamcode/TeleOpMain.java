@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp
 public class TeleOpMain extends LinearOpMode {
-    DcMotor FL, FR, BL, BR, arm, flywheel;
+    DcMotor FL, FR, BL, BR, arm, flywheel, servo;
     Servo gripper;
     private boolean directionState;
 
@@ -19,9 +19,11 @@ public class TeleOpMain extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()) {
-            mainDriveControl();
-            microDrive();
+            driveControl();
+            dpadDrive();
             armControl();
+            gripperControl();
+            flywheelControl();
         }
     }
     void initialize() {
@@ -29,6 +31,7 @@ public class TeleOpMain extends LinearOpMode {
         FR = hardwareMap.get(DcMotor.class, "FR");
         BL = hardwareMap.get(DcMotor.class, "BL");
         BR = hardwareMap.get(DcMotor.class, "BR");
+        slides = hardwareMap.get(DcMotor.class, "slides);
 
         FR.setDirection(DcMotorSimple.Direction.REVERSE);
         BR.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -45,7 +48,7 @@ public class TeleOpMain extends LinearOpMode {
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
 
     }
-    void mainDriveControl() {
+    void driveControl() {
 
         double LY = gamepad1.left_stick_y;
         double RY = gamepad1.right_stick_y;
@@ -56,7 +59,7 @@ public class TeleOpMain extends LinearOpMode {
         BR.setPower(RY);
 
     }
-    void microDrive() {
+    void dpadDrive() {
         if (gamepad1.dpad_up) {
             FL.setPower(-.4);
             FR.setPower(-.4);
@@ -80,7 +83,15 @@ public class TeleOpMain extends LinearOpMode {
         }
     }
     void armControl() {
-        arm.setPower(Range.clip(-gamepad2.left_stick_y, -1, .6));
+        slides.setPower(Range.clip(-gamepad2.left_stick_y, -1, .6));
+    }
+    void slideControl() {
+        if (gamepad2.dpad_up) {
+            arm.setPower(1);
+        }
+        else if (gamepad2.dpad_down) {
+            arm.setPower(-1);
+        }
     }
     
     void gripperControl() {
