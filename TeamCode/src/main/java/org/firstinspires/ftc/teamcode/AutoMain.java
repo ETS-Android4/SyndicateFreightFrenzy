@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-
+import org.firstinspires.ftc.teamcode.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 enum StartPosition {
@@ -35,23 +35,11 @@ public class AutoMain extends LinearOpMode {
 
     private DcMotor FL, FR, BL, BR, armMotor, flywheel;
     private Servo gripperServo;
-    private BNO055IMU imu;
+ 
     private Orientation angles;
 
     @Override
     public void runOpMode() {
-
-        //IMU setup. Sets the necessary parameters. Using degrees, not radians!
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; //Is this built in? Hopefully
-        parameters.loggingEnabled      = true;
-        parameters.loggingTag          = "IMU";
-
-        angles = imu.getAngularOrientation();
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
-
         FL  = hardwareMap.get(DcMotor.class, "FL");
         FR = hardwareMap.get(DcMotor.class, "FR");
         BR = hardwareMap.get(DcMotor.class, "BR");
@@ -79,29 +67,10 @@ public class AutoMain extends LinearOpMode {
             idle();
         }
     }
-    public static double normalizeAngle(double angle) {
-        if (angle < -180) {
-            return normalizeAngle(angle + 360);
-        } else if (angle > 180) {
-            return normalizeAngle(angle - 360);
-        }
-        return angle;
-    }
-    BNO055IMU.Parameters initialize() {
-
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json";
-        parameters.loggingEnabled = true;
-        parameters.loggingTag = "IMU";
-
-        return parameters;
-
-    }
     public void turn(double angle) {
 
         update();
-        double target = normalizeAngle(getAngle() + angle);
+        double target = imu.normalizeAngle(getAngle() + angle);
 
         double left, right;
 
