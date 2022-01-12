@@ -48,7 +48,7 @@ public class AutoMain extends LinearOpMode {
         parameters.loggingEnabled      = true;
         parameters.loggingTag          = "IMU";
 
-        angles = getAngularOrientation();
+        angles = imu.getAngularOrientation();
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
@@ -182,7 +182,7 @@ public class AutoMain extends LinearOpMode {
         stopMotors();
     }
     public void update() {
-        angles = getAngularOrientation();
+        angles = imu.getAngularOrientation();
     }
     public void driveSpeed(int distance, double targetAngle, double speed) {
 
