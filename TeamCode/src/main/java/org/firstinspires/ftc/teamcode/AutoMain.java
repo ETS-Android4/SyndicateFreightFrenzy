@@ -78,10 +78,10 @@ public class AutoMain extends LinearOpMode {
         boolean negative = target < getAngle() && target - getAngle() < 180;
         ElapsedTime timeout = new ElapsedTime();
 
-        while (getAngle() < target - .08 || getAngle() > target + .08) {
+        while (imu.getAngle() < target - .08 || imu.getAngle() > target + .08) {
 
             update();
-            left = -approx(Kt * (target - getAngle()) * (target - getAngle() > 180 || target - getAngle() < -180 ? -1 : 1), .18, .6, false);
+            left = -approx(Kt * (target - imu.getAngle()) * (target - imu.getAngle() > 180 || target - imu.getAngle() < -180 ? -1 : 1), .18, .6, false);
             right = -left;
 
             if (!exit) {
@@ -101,9 +101,6 @@ public class AutoMain extends LinearOpMode {
 
         stopMotors();
 
-    }
-    public double getAngle() {
-        return angles.firstAngle;
     }
     public void powerMotors(double speed, DcMotor... motors) {
         for (DcMotor motor : motors) {
@@ -143,7 +140,7 @@ public class AutoMain extends LinearOpMode {
             }
 
             update();
-            double imuError = targetAngle - getAngle(); // assume 0 -> 360 is clockwise
+            double imuError = targetAngle - imu.getAngle(); // assume 0 -> 360 is clockwise
             left -= .05 * imuError;
             right += .05 * imuError;
 
@@ -180,7 +177,7 @@ public class AutoMain extends LinearOpMode {
             right = left;
 
             update();
-            double imuError = targetAngle - getAngle(); // assume 0 -> 360 is clockwise
+            double imuError = targetAngle - imu.getAngle(); // assume 0 -> 360 is clockwise
             left -= .03 * imuError;
             right += .03 * imuError;
 
@@ -218,7 +215,7 @@ public class AutoMain extends LinearOpMode {
     public void turnSpeed(double angle, double speed) {
 
         update();
-        double target = normalizeAngle(getAngle() + angle);
+        double target = imu.normalizeAngle(imu.getAngle() + angle);
 
         double left, right;
 
