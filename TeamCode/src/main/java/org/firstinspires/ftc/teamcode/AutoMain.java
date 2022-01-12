@@ -87,6 +87,17 @@ public class AutoMain extends LinearOpMode {
         }
         return angle;
     }
+    BNO055IMU.Parameters initialize() {
+
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json";
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
+
+        return parameters;
+
+    }
     public void turn(double angle) {
 
         update();
