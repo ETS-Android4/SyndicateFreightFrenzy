@@ -33,7 +33,7 @@ public class AutoMain extends LinearOpMode {
 
 
 
-    private DcMotor FL, FR, BL, BR, armMotor, flywheel;
+    private DcMotor FL, FR, BL, BR, arm, flywheel, slides;
     private Servo gripperServo;
  
     private Orientation angles;
@@ -44,15 +44,16 @@ public class AutoMain extends LinearOpMode {
         FR = hardwareMap.get(DcMotor.class, "FR");
         BR = hardwareMap.get(DcMotor.class, "BR");
         BL = hardwareMap.get(DcMotor.class, "BL");
-        armMotor = hardwareMap.get(DcMotor.class, "arm");
+        arm = hardwareMap.get(DcMotor.class, "arm");
         gripperServo = hardwareMap.get(Servo.class, "gripper");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
+        slides = hardwareMap.get(DcMotor.class, "slides");
 
         FL.setDirection(DcMotor.Direction.REVERSE);
         BL.setDirection(DcMotor.Direction.REVERSE);
         FR.setDirection(DcMotor.Direction.FORWARD);
         BR.setDirection(DcMotor.Direction.FORWARD);
-        armMotor.setDirection(DcMotor.Direction.FORWARD);
+        arm.setDirection(DcMotor.Direction.FORWARD);
         flywheel.setDirection(DcMotorSimple.Direction.FORWARD);
 
         BL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
