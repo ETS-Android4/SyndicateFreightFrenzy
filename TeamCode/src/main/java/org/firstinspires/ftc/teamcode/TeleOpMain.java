@@ -83,14 +83,14 @@ public class TeleOpMain extends LinearOpMode {
         }
     }
     void armControl() {
-        arm.setPower(Range.clip(-gamepad2.left_stick_y, -1, .6));
+        slides.setPower(Range.clip(-gamepad2.left_stick_y, -1, .6));
     }
     void slideControl() {
         if (gamepad2.dpad_up) {
-            slides.setPower(1);
+            arm.setPower(1);
         }
         else if (gamepad2.dpad_down) {
-            slides.setPower(-1);
+            arm.setPower(-1);
         }
     }
     
