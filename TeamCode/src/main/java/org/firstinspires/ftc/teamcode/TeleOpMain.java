@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp
 public class TeleOpMain extends LinearOpMode {
-    DcMotor FL, FR, BL, BR, arm, flywheel;
+    DcMotor FL, FR, BL, BR, arm, flywheel, servo;
     Servo gripper;
     private boolean directionState;
 
@@ -31,6 +31,7 @@ public class TeleOpMain extends LinearOpMode {
         FR = hardwareMap.get(DcMotor.class, "FR");
         BL = hardwareMap.get(DcMotor.class, "BL");
         BR = hardwareMap.get(DcMotor.class, "BR");
+        slides = hardwareMap.get(DcMotor.class, "slides);
 
         FR.setDirection(DcMotorSimple.Direction.REVERSE);
         BR.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -83,6 +84,14 @@ public class TeleOpMain extends LinearOpMode {
     }
     void armControl() {
         arm.setPower(Range.clip(-gamepad2.left_stick_y, -1, .6));
+    }
+    void slideControl() {
+        if (gamepad2.dpad_up) {
+            slides.setPower(1);
+        }
+        else if (gamepad2.dpad_down) {
+            slides.setPower(-1);
+        }
     }
     
     void gripperControl() {
