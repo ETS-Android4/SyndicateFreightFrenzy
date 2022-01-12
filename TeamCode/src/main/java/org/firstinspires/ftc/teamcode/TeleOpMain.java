@@ -2,19 +2,23 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.Range;
 
 
 @TeleOp
 public class TeleOpMain extends LinearOpMode {
-    DcMotor FL, FR, BL, BR, arm, flywheel, servo;
+    DcMotor FL, FR, BL, BR, arm, flywheel, servo, slides;
     Servo gripper;
     private boolean directionState;
 
 
     @Override
     public void runOpMode() {
-        
-        intialize();
+        //What is this
+//        intialize();
         
         waitForStart();
 
@@ -31,7 +35,7 @@ public class TeleOpMain extends LinearOpMode {
         FR = hardwareMap.get(DcMotor.class, "FR");
         BL = hardwareMap.get(DcMotor.class, "BL");
         BR = hardwareMap.get(DcMotor.class, "BR");
-        slides = hardwareMap.get(DcMotor.class, "slides);
+        slides = hardwareMap.get(DcMotor.class, "slides");
 
         FR.setDirection(DcMotorSimple.Direction.REVERSE);
         BR.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -97,7 +101,7 @@ public class TeleOpMain extends LinearOpMode {
     void gripperControl() {
         int dpad_right_count = 0; 
         directionState = false;      
-        if(directionState == false){
+        if(!directionState){
             if(gamepad2.dpad_right){
                 dpad_right_count += 1;
                 directionState = true;
@@ -119,7 +123,7 @@ public class TeleOpMain extends LinearOpMode {
     void flywheelControl() {
         int dpad_left_count = 0; 
         directionState = false;      
-        if(directionState == false){
+        if(!directionState){
             if(gamepad2.dpad_left){
                 dpad_left_count += 1;
                 directionState = true;
