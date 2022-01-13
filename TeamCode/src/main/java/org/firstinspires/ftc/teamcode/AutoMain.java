@@ -89,12 +89,12 @@ public class AutoMain extends LinearOpMode {
             gripperServo.setPosition(1);
             //@TODO: MAP OUT PATH
             // ticks
-            drive(1000 , 0);
+            drive(100 , 0);
             powerMotors(0.75 , armMotor);
             sleep(1000);
             stopMotors(armMotor);
             turn(180);
-            drive(2120 , 0);
+            drive(212 , 0);
             idle();
         }
     }
