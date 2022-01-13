@@ -88,6 +88,13 @@ public class AutoMain extends LinearOpMode {
         while (opModeIsActive()) {
             gripperServo.setPosition(1);
             //@TODO: MAP OUT PATH
+            // Assumed feet?
+            drive(5.5 , 0);
+            powerMotors(0.75 , armMotor);
+            sleep(1000);
+            stopMotors(armMotor);
+            turn(180);
+            drive(11.7 , 0);
             idle();
         }
     }
