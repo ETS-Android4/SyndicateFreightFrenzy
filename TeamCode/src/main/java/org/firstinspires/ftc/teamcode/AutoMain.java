@@ -98,12 +98,12 @@ public class AutoMain extends LinearOpMode {
             drive(212 , 0);
             idle();
             */
-            turn(90);
-            drive(100,0);
+            turn(-90);
+            drive(-100,0);
             flywheel.setPower(0.25);
             sleep(500);
             turn(-90);
-            drive(1000);
+            drive(-1000);
             idle();
         }
     }
