@@ -1,4 +1,4 @@
-//PLEASE DO NOT USE THIS OPMODE
+//Use for qual1 following Emily's reworks
 
 
 package org.firstinspires.ftc.teamcode;
@@ -25,9 +25,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 public class ScrimmAuto extends LinearOpMode {
     /*
      * Syndicate Autonomous Strategy 1: move to depot
-     * Authors: Harish Varadarajan
+     * Authors: Harish Varadarajan, Emily Goldman
      * Purpose: autonomous program for FTC Freight Frenzy: park in the depot for 10 points
- 30-second Autonomous period
+     *          30-second Autonomous period
+     * Revision: 2.0
  */
     private BNO055IMU imu;
     private Orientation angles;
@@ -63,6 +64,10 @@ public class ScrimmAuto extends LinearOpMode {
         stopMotors();
         resetEncoders();
     }
+
+    /**
+     * Stops motors when necessary
+     */
     void stopMotors() {
         frontLeft.setPower(0);
         backLeft.setPower(0);
@@ -87,6 +92,12 @@ public class ScrimmAuto extends LinearOpMode {
     }
 
 
+    /**
+     * Drives the amount specified at the power specified.
+     * @param power Power of the motors, 0.0-1.0
+     * @param inchOrDeg Amount of inches or degrees the motors should rotate.
+     * @param isInchOrDeg If the motors should rotate based on an inch value or degree value.
+     */
     private void drive (double power, int inchOrDeg, String isInchOrDeg) {
         /* drive forward/backward (negative inches is driving backward) */
         if (isInchOrDeg.equals("inchForward")) {
@@ -104,6 +115,8 @@ public class ScrimmAuto extends LinearOpMode {
             backLeft.setPower(0);
             backRight.setPower(0);
         }
+        //Drive forwards or backwards, depending on the degree type.
+        //leftDegree is forwards, rightDegree is backwards.
         else if (isInchOrDeg.equals("leftDegree")){
             frontLeft.setTargetPosition((-inchOrDeg/360) * ((int) circumference));
             backLeft.setTargetPosition((-inchOrDeg/360) * ((int) circumference));
@@ -140,6 +153,10 @@ public class ScrimmAuto extends LinearOpMode {
             idle();
         }
     }
+
+    /**
+     * Park the robot.
+     */
     private void park() {
        /*
 The drive method has two parameters respectively for inching forward: power and inches. Alter them to meet your needs.
@@ -239,7 +256,13 @@ The drive method also has 3 parameters for turning: power (which is almost alway
             idle();
         }
     }
-    //DELETE THIS AFTER SCRIMM!!!!!
+
+    /**
+     * Turn the robot depending on if we're on the blue or red alliance
+     * @param power Motor speed, 0.0-1.0
+     * @param color Alliance color
+     * @TODO: Refine this for the second qualifier.
+     */
     void badTurnPleaseDelete(double power, String color) {
         if(color.equals("blue")) {
             frontLeft.setPower(-power);
