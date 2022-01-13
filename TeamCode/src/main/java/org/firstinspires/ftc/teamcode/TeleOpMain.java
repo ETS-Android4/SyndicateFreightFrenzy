@@ -56,7 +56,8 @@ public class TeleOpMain extends LinearOpMode {
 
         double LY = gamepad1.left_stick_y;
         double RY = gamepad1.right_stick_y;
-
+        LY = Range.clip(LY, -0.75, 0.75);
+        RY = Range.clip(RY, -0.75, 0.75);
         FL.setPower(LY);
         FR.setPower(RY);
         BL.setPower(LY);
