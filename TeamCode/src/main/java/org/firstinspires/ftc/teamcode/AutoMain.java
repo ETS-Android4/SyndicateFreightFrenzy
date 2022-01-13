@@ -89,6 +89,7 @@ public class AutoMain extends LinearOpMode {
             gripperServo.setPosition(1);
             //@TODO: MAP OUT PATH
             // ticks
+            /*
             drive(100 , 0);
             powerMotors(0.75 , armMotor);
             sleep(1000);
@@ -96,6 +97,13 @@ public class AutoMain extends LinearOpMode {
             turn(180);
             drive(212 , 0);
             idle();
+            */
+            turn(90);
+            drive(100,0);
+            imu.update();
+            flywheel.setPower(0.25);
+            turn(-90);
+            drive(1000);
         }
     }
     public void turn(double angle) {
