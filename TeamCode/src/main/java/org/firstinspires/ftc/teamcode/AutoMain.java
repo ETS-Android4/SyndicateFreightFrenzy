@@ -104,7 +104,7 @@ public class AutoMain extends LinearOpMode {
             sleep(500);
             turn(-90);
             drive(1000);
-            
+            idle();
         }
     }
     public void turn(double angle) {
