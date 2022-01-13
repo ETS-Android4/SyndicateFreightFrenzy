@@ -103,7 +103,7 @@ public class AutoMain extends LinearOpMode {
             flywheel.setPower(0.25);
             sleep(500);
             turn(-90);
-            drive(-1000);
+            drive(-1000, 0);
             idle();
         }
     }
