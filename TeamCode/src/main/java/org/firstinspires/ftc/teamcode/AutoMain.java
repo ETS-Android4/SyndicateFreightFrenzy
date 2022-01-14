@@ -43,6 +43,10 @@ public class AutoMain extends LinearOpMode {
     private Servo gripperServo;
     private IMU imu;
     private Orientation angles;
+    private static final int LENGTH = 14, WIDTH = 18, WHEEL_RADIUS = 2, TICKS_PER_ROT = 1440, GEAR_RATIO = 60,
+            TICKS_PER_DEGREE = TICKS_PER_ROT * GEAR_RATIO / 360;
+    private static final double TICKS_PER_INCH = TICKS_PER_ROT * GEAR_RATIO / 2 * Math.PI * WHEEL_RADIUS,
+            TURN_RADIUS = Math.sqrt(Math.pow(LENGTH/2) + Math.pow(WIDTH/2));
 
     @Override
     public void runOpMode() {
@@ -107,42 +111,13 @@ public class AutoMain extends LinearOpMode {
             idle();
         }
     }
-    public void turn(double angle) {
-        /*
-        Reads the IMU's heading, then sets it to the be the target
-         */
-        double target = imu.normalizeAngle(imu.getAngle() + angle);
-
-        double left, right;
-
-        boolean exit = false;
-        boolean negative = target < imu.getAngle() && target - imu.getAngle() < 180;
-        ElapsedTime timeout = new ElapsedTime();
-
-        while (imu.getAngle() < target - .08 || imu.getAngle() > target + .08) {
-
-            imu.update();
-            left = -approx(IMU.Kp * (target - imu.getAngle()) * (target - imu.getAngle() > 180 || target - imu.getAngle() < -180 ? -1 : 1), .18, .6, false);
-            right = -left;
-
-            if (!exit) {
-                if (negative && left < 0 || !negative && left > 0) {
-                    exit = true;
-                    timeout.reset();
-                }
-            }
-
-            powerMotors(left, FL, BL);
-            powerMotors(right, FR, BR);
-
-            telemetry.addData("angle", imu.getAngle());
-            telemetry.update();
-
+    public static void turn(double degrees) {
+            double turnInches = (degrees/360) * (2 * Math.PI * TURN_RADIUS);
+            FL.setTargetPosition((int)(FL.getCurrentPosition() + (turnInches * TICKS_PER_INCH / 2)));
+            FR.setTargetPosition((int)(FR.getCurrentPosition() - (turnInches * TICKS_PER_INCH / 2)));
+            BL.setTargetPosition((int)(BL.getCurrentPosition() + (turnInches * TICKS_PER_INCH / 2)));
+            BR.setTargetPosition((int)(BR.getCurrentPosition() - (turnInches * TICKS_PER_INCH / 2)));
         }
-
-        stopMotors();
-
-    }
     public void powerMotors(double speed, DcMotor... motors) {
         for (DcMotor motor : motors) {
             motor.setPower(speed);
@@ -151,54 +126,29 @@ public class AutoMain extends LinearOpMode {
     public void stopMotors() {
         powerMotors(0);
     }
-    public void drive(int distance, double targetAngle) {
-
-        resetEncoders();
-        double target = getEncoder() + distance;
-
-        double left, right;
-
-        boolean exit = false;
-        boolean negative = target < 0;
-
-        ElapsedTime timeout = new ElapsedTime();
-
-        while (getEncoder() < target - 12 || getEncoder() > target + 12) {
-
-            if (exit && timeout.time(TimeUnit.MILLISECONDS) > 500) {
-                break;
+    private static void drive(String type, double value) {
+            type = type.toLowerCase();
+            if (type == "inches") {
+                FL.setTargetPosition((int)(FL.getCurrentPosition() + (value * TICKS_PER_INCH)));
+                FL.setPower(.5);
+                FR.setTargetPosition((int)(FR.getCurrentPosition() + (value * TICKS_PER_INCH)));
+                FR.setPower(.5);
+                BL.setTargetPosition((int)(BL.getCurrentPosition() + (value * TICKS_PER_INCH)));
+                BL.setPower(.5);
+                BR.setTargetPosition((int)(BR.getCurrentPosition() + (value * TICKS_PER_INCH)));
+                BR.setPower(.5);
             }
-
-            // proportional drive
-            left = approx(.005 * (target - getEncoder()), .18, .8, false);
-            right = left;
-
-            if (!exit) {
-                if (negative && left > 0 || !negative && left < 0) {
-                    exit = true;
-                    timeout.reset();
-                }
+            else if (type == "degrees") {
+                FL.setTargetPosition((int)(FL.getCurrentPosition() + (value * TICKS_PER_DEGREE)));
+                FL.setPower(.5);
+                FR.setTargetPosition((int)(FR.getCurrentPosition() + (value * TICKS_PER_DEGREE)));
+                FR.setPower(.5);
+                BL.setTargetPosition((int)(BL.getCurrentPosition() + (value * TICKS_PER_DEGREE)));
+                BL.setPower(.5);
+                BR.setTargetPosition((int)(BR.getCurrentPosition() + (value * TICKS_PER_DEGREE)));
+                BR.setPower(.5);
             }
-
-            imu.update();
-            double imuError = targetAngle - imu.getAngle(); // assume 0 -> 360 is clockwise
-            left -= .05 * imuError;
-            right += .05 * imuError;
-
-            powerMotors(left, FL, BL);
-            powerMotors(right, FR, BR);
-
-            telemetry.addData("left", FL.getCurrentPosition());
-            telemetry.addData("right", BR.getCurrentPosition());
-            telemetry.addData("lp", left);
-            telemetry.addData("rp", right);
-            telemetry.addData("imu", imuError);
-            telemetry.update();
-
         }
-
-        stopMotors();
-    }
     public void driveSpeed(int distance, double targetAngle, double speed) {
 
         resetEncoders();
