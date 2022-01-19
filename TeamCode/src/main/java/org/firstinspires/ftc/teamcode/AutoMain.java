@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -41,8 +40,6 @@ public class AutoMain extends LinearOpMode {
     private DcMotor FL, FR, BL, BR, armMotor, flywheel;
     DcMotor[] motors = new DcMotor[4];
     private Servo gripperServo;
-    private IMU imu;
-    private Orientation angles;
     private static final int LENGTH = 14, WIDTH = 18, WHEEL_RADIUS = 2, TICKS_PER_ROT = 1440, GEAR_RATIO = 60,
             TICKS_PER_DEGREE = TICKS_PER_ROT * GEAR_RATIO / 360;
     private static final double TICKS_PER_INCH = TICKS_PER_ROT * GEAR_RATIO / 2 * Math.PI * WHEEL_RADIUS,
@@ -50,22 +47,14 @@ public class AutoMain extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-
-        //IMU setup. Sets the necessary parameters. Using degrees, not radians!
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; //Is this built in? Hopefully
-        parameters.loggingEnabled      = true;
-        parameters.loggingTag          = "IMU";
-
-        //imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu = new IMU(hardwareMap);
-        //imu.initialize(parameters);
-
         FL  = hardwareMap.get(DcMotor.class, "FL");
         FR = hardwareMap.get(DcMotor.class, "FR");
         BR = hardwareMap.get(DcMotor.class, "BR");
         BL = hardwareMap.get(DcMotor.class, "BL");
+        FL.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
+        FR.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
+        BR.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
+        BL.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
         armMotor = hardwareMap.get(DcMotor.class, "arm");
         gripperServo = hardwareMap.get(Servo.class, "gripper");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
@@ -117,15 +106,19 @@ public class AutoMain extends LinearOpMode {
             FR.setTargetPosition((int)(FR.getCurrentPosition() - (turnInches * TICKS_PER_INCH / 2)));
             BL.setTargetPosition((int)(BL.getCurrentPosition() + (turnInches * TICKS_PER_INCH / 2)));
             BR.setTargetPosition((int)(BR.getCurrentPosition() - (turnInches * TICKS_PER_INCH / 2)));
+            if (degrees > 0) {
+                FL.setPower(0.5);
+                FR.setPower(0.5);
+                BL.setPower(0.5);
+                BR.setPower(0.5);
+            }
+            else {
+                FL.setPower(-0.5);
+                FR.setPower(-0.5);
+                BL.setPower(-0.5);
+                BR.setPower(-0.5);
+            }
         }
-    public void powerMotors(double speed, DcMotor... motors) {
-        for (DcMotor motor : motors) {
-            motor.setPower(speed);
-        }
-    }
-    public void stopMotors() {
-        powerMotors(0);
-    }
     private static void drive(String type, double value) {
             type = type.toLowerCase();
             if (type == "inches") {
@@ -149,97 +142,5 @@ public class AutoMain extends LinearOpMode {
                 BR.setPower(.5);
             }
         }
-    public void driveSpeed(int distance, double targetAngle, double speed) {
-
-        resetEncoders();
-        double target = getEncoder() + distance;
-
-        double left, right;
-
-        boolean condition = true;
-
-        while (condition) {
-
-            // proportional drive
-            left = speed * (distance < 0 ? -1 : 1);
-            right = left;
-
-            imu.update();
-            double imuError = targetAngle - imu.getAngle(); // assume 0 -> 360 is clockwise
-            left -= .03 * imuError;
-            right += .03 * imuError;
-
-            powerMotors(left, FL, BL);
-            powerMotors(right, FR, BR);
-
-            telemetry.addData("left", FL.getCurrentPosition());
-            telemetry.addData("right", BR.getCurrentPosition());
-            telemetry.addData("lp", left);
-            telemetry.addData("rp", right);
-            telemetry.addData("imu", imuError);
-            telemetry.update();
-
-            if (target < 0) {
-                condition = getEncoder() > target;
-            } else {
-                condition = getEncoder() < target;
-            }
-
-        }
-
-        stopMotors();
-
-    }
-    public void resetEncoders() {
-        for (DcMotor motor : motors) {
-            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        }
-    }
-    public void turnSpeed(double angle, double speed) {
-
-        imu.update();
-        double target = IMU.normalizeAngle(imu.getAngle() + angle);
-
-        double left, right;
-
-        boolean condition = true;
-
-        while (condition) {
-
-            imu.update();
-            left = -speed * (angle < 0 ? -1 : 1);
-            right = speed * (angle < 0 ? -1 : 1);
-
-            powerMotors(left, FL, BL);
-            powerMotors(right, FR, BR);
-
-            telemetry.addData("angle", imu.getAngle());
-            telemetry.update();
-
-            if (angle < 0) {
-                condition = imu.getAngle() > target;
-            } else {
-                condition = imu.getAngle() < target;
-            }
-
-        }
-
-        stopMotors();
-
-    }
-    public double getEncoder() {
-        double sum = 0;
-        for (DcMotor motor : motors) {
-            sum += motor.getCurrentPosition();
-        }
-        return sum/motors.length;
-    }
-    public double approx(double value, double min, double max, boolean signed) {
-        if (!signed && value >= 0)
-            return Math.max(min, Math.min(value, max));
-        else
-            return Math.max(-max, Math.min(value, -min));
-    }
 
 }
