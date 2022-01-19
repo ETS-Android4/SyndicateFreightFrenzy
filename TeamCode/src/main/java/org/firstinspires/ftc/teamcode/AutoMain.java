@@ -36,7 +36,9 @@ public class AutoMain extends LinearOpMode {
     private boolean spinCarousel = true;
     private boolean placeBlockOnShipping = true;
 
-
+    //Tick rate is 384.5 PPR
+    //Wheel radius is 4.528 inches
+    //384.5 * (PI/90)
 
     private DcMotor FL, FR, BL, BR, armMotor, flywheel , slides;
     DcMotor[] motors = new DcMotor[4];
@@ -455,6 +457,19 @@ public class AutoMain extends LinearOpMode {
             return Math.max(min, Math.min(value, max));
         else
             return Math.max(-max, Math.min(value, -min));
+    }
+    
+    public static double normalizeAngle(double angle) {
+        if (angle < -180) {
+            return normalizeAngle(angle + 360);
+        } else if (angle > 180) {
+            return normalizeAngle(angle - 360);
+        }
+        return angle;
+    }
+
+    public static void turn(int angle) {
+        
     }
 
 }
