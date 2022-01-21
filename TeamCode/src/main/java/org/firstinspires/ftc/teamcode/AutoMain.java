@@ -114,9 +114,9 @@ public class AutoMain extends LinearOpMode {
             }
             else {
                 FL.setPower(-0.5);
-                FR.setPower(-0.5);
+                FR.setPower(0.5);
                 BL.setPower(-0.5);
-                BR.setPower(-0.5);
+                BR.setPower(0.5);
             }
         }
     private static void drive(String type, double value) {
