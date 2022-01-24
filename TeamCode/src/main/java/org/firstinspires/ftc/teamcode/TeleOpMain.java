@@ -18,6 +18,7 @@ public class TeleOpMain extends LinearOpMode {
         FR = hardwareMap.get(DcMotor.class, "FR");
         BL = hardwareMap.get(DcMotor.class, "BL");
         BR = hardwareMap.get(DcMotor.class, "BR");
+        intake = hardwareMap.get(DcMotor.class, "intake");
         slides = hardwareMap.get(DcMotor.class, "slides");
         outtake = hardwareMap.get(Servo.class, "outtake");
         gripper = hardwareMap.get(Servo.class ,"gripper");
@@ -50,6 +51,22 @@ public class TeleOpMain extends LinearOpMode {
             gripperControl();
             flywheelControl();
             outtakeControl();
+        }
+    }
+    void intakeControl() {
+        if (gamepad2.a) {
+            intake.setTargetPosition(1500) //experiment with value
+            intake.setPower(0.5);
+            while (intake.isBusy()) {
+                
+            }
+        }
+        if (gamepad2.b) {
+            intake.setTargetPosition(750) //experiment with value
+            intake.setPower(-0.5);
+            while (intake.isBusy()) {
+                
+            }
         }
     }
     void driveControl() {
