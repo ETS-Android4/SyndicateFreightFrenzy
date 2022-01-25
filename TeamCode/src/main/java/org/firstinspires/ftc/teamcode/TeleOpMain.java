@@ -20,6 +20,9 @@ public class TeleOpMain extends LinearOpMode {
         BR = hardwareMap.get(DcMotor.class, "BR");
         intake = hardwareMap.get(DcMotor.class, "intake");
         intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        intake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        intake.setTargetPosition(0);
+        intake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slides = hardwareMap.get(DcMotor.class, "slides");
         outtake = hardwareMap.get(Servo.class, "outtake");
         gripper = hardwareMap.get(Servo.class ,"gripper");
@@ -57,17 +60,25 @@ public class TeleOpMain extends LinearOpMode {
     }
     void intakeControl() {
         if (gamepad2.a) {
+            intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             intake.setTargetPosition(1500) //experiment with value
+            intake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             intake.setPower(0.5);
             while (intake.isBusy()) {
-                
+                telemetry.addData("Target Position", 1500);
+                telemtry.addData("Current Position", intake.getCurrentPosition());
+                telemtry.update();           
             }
         }
         if (gamepad2.b) {
+            intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             intake.setTargetPosition(750) //experiment with value
+            intake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             intake.setPower(-0.5);
             while (intake.isBusy()) {
-                
+                telemetry.addData("Target Position", 750);
+                telemtry.addData("Current Position", intake.getCurrentPosition());
+                telemtry.update();   
             }
         }
     }
