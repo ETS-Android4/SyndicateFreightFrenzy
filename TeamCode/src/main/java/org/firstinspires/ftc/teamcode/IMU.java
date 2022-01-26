@@ -19,17 +19,23 @@ public class IMU {
         angles = imu.getAngularOrientation();
 
     }
-
+    
+    /**
+     * Normalizes the angle to be between -180 and 180.
+     * @param angle     The angle to be normalized.
+     * @return          The normalized angle
+     */
     public static double normalizeAngle(double angle) {
-        if (angle < -180) {
+        if (angle <= -180) {
             return normalizeAngle(angle + 360);
-        } else if (angle > 180) {
+        } else if (angle >= 180) {
             return normalizeAngle(angle - 360);
         }
         return angle;
     }
 
     public double getAngle() {
+        update();
         return angles.firstAngle;
     }
 
