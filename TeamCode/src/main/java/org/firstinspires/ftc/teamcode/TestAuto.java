@@ -106,7 +106,7 @@ public class TestAuto extends LinearOpMode {
     }
     
     private void turn(double degree) {
-        R.setTargetPosition(degree*6);
+            BR.setTargetPosition(degree*6);
             BL.setTargetPosition(degree*6*-1);
             
             leftMotors.setPower(-1.0);
