@@ -121,6 +121,7 @@ public class TestAuto extends LinearOpMode {
                 telemetry.addData("BR" , BR.getCurrentPosition());
                 telemetry.update();
             }
+            allMotors.off();
     }
     
     private void testMotors(byte change) {
