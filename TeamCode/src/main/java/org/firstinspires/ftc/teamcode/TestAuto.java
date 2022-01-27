@@ -105,6 +105,24 @@ public class TestAuto extends LinearOpMode {
         // idle();
     }
     
+    private void turn(double degree) {
+        R.setTargetPosition(degree*6);
+            BL.setTargetPosition(degree*6*-1);
+            
+            leftMotors.setPower(-1.0);
+            rightMotors.setPower(1.0);
+            
+            backMotors.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            while(isAtAngle(degree*6) || backMotors.isBusy()) {
+                telemetry.addData("Angle" , imu.getAngle());
+                telemetry.addData("FL" , FL.getCurrentPosition());
+                telemetry.addData("BL" , BL.getCurrentPosition());
+                telemetry.addData("FR" , FR.getCurrentPosition());
+                telemetry.addData("BR" , BR.getCurrentPosition());
+                telemetry.update();
+            }
+    }
+    
     private void testMotors(byte change) {
         FL.setPower(change * 0.5);
         readTelemetryMotorPower();
