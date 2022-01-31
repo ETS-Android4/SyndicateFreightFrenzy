@@ -60,6 +60,7 @@ public class TeleOpMain extends LinearOpMode {
     }
     void intakeControl() {
         if (gamepad2.a) {
+            /*
             intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             intake.setTargetPosition(1500) //experiment with value
             intake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -69,8 +70,12 @@ public class TeleOpMain extends LinearOpMode {
                 telemtry.addData("Current Position", intake.getCurrentPosition());
                 telemtry.update();           
             }
+            */
+            intake.setPower(-0.5);
         }
         if (gamepad2.b) {
+            intake.setPower(0.5);
+            /*
             intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             intake.setTargetPosition(750) //experiment with value
             intake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -80,6 +85,7 @@ public class TeleOpMain extends LinearOpMode {
                 telemtry.addData("Current Position", intake.getCurrentPosition());
                 telemtry.update();   
             }
+            */
         }
     }
     void driveControl() {
