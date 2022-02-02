@@ -36,9 +36,11 @@ public class AutoMain extends LinearOpMode {
     private boolean spinCarousel = true;
     private boolean placeBlockOnShipping = true;
 
+    //Tick rate is 384.5 PPR
+    //Wheel radius is 4.528 inches
+    //384.5 * (PI/90)
 
-
-    private DcMotor FL, FR, BL, BR, armMotor, flywheel;
+    private DcMotor FL, FR, BL, BR, armMotor, flywheel , slides;
     DcMotor[] motors = new DcMotor[4];
     private Servo gripperServo;
     private IMU imu;
@@ -63,19 +65,23 @@ public class AutoMain extends LinearOpMode {
         BR = hardwareMap.get(DcMotor.class, "BR");
         BL = hardwareMap.get(DcMotor.class, "BL");
         armMotor = hardwareMap.get(DcMotor.class, "arm");
+        slides = hardwareMap.get(DcMotor.class, "slides");
         gripperServo = hardwareMap.get(Servo.class, "gripper");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
 
         motors[0] = FL;
         motors[1] = FR;
-        motors[3] = BR;
-        motors[4] = BL;
+        motors[2] = BR;
+        motors[3] = BL;
 
+        // FORWARD = positive = forward (right)
+        // REVERSE = negative = forward (right)
         FL.setDirection(DcMotor.Direction.REVERSE);
         BL.setDirection(DcMotor.Direction.REVERSE);
         FR.setDirection(DcMotor.Direction.FORWARD);
         BR.setDirection(DcMotor.Direction.FORWARD);
         armMotor.setDirection(DcMotor.Direction.FORWARD);
+        slides.setDirection(DcMotor.Direction.FORWARD);
         flywheel.setDirection(DcMotorSimple.Direction.FORWARD);
 
         BL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -85,17 +91,194 @@ public class AutoMain extends LinearOpMode {
 
 
         waitForStart();
-        while (opModeIsActive()) {
-            gripperServo.setPosition(1);
-            //@TODO: MAP OUT PATH
+        //while (opModeIsActive()) {
+        // gripperServo.setPosition(1);
+        //@TODO: MAP OUT PATH
+        // ticks
+            /*
+            drive(100 , 0);
+            powerMotors(0.75 , armMotor);
+            sleep(1000);
+            stopMotors(armMotor);
+            turn(180);
+            drive(212 , 0);
             idle();
-        }
+            */
+        // slides.setPower(0.75);
+        // sleep(1000);
+            /*
+            telemetry.addData("Gripper: " , gripperServo.getPosition());
+            telemetry.update();
+            sleep(1000);
+            gripperServo.setPosition(gripperServo.getPosition() + 0.1);
+            telemetry.addData("Gripper: " , gripperServo.getPosition());
+            telemetry.update();
+            // gripperServo.setPosition(0.9);
+            slides.setPower(0);
+            */
+        // sleep(5000);
+        // slides.setPower(-0.75);
+        // sleep(1000);
+        // slides.setPower(0);
+        // powerMotors(-0.5 , FR , BR);
+        // powerMotors(0.5 , FL , BL);
+        //for(int i = 0 ; i < 3 ; i++) {
+
+
+            /*
+            {
+            // 1st Move
+            moveForward(.3,250);
+            moveForward(-0.5 , 250);
+
+            // 1st Turn and 2nd Move Forward
+            turnSpeed(90 , 1.0);
+            moveForward(-0.5 , 1800);
+
+            // 2nd Turn and 3rd Move Forward
+            turnSpeed(-90 , -1.0);
+            moveForward(-0.5 , 1450);
+
+                /*drive(-100,0);
+                flywheel.setPower(0.25);
+                sleep(500);
+                turn(-90);
+                drive(-1000, 0);
+
+            // Ducky go spin
+            flywheel.setPower(-0.50);
+            sleep(2000);
+            flywheel.setPower(0);
+            sleep(2000);
+
+            // Backup
+            moveForward(0.5 , 800);
+
+            // Zoom Zoom to warehouse
+            turnSpeed(107 , 1.0);
+            moveForward(-1.0 , 2600);
+            }
+            */
+
+        FR.setPower(-1.0);
+        BR.setPower(-1.0);
+        FL.setPower(-1.0);
+        BL.setPower(-1.0);
+        sleep(1300);
+        FR.setPower(0);
+        BR.setPower(0);
+        FR.setPower(0);
+        BR.setPower(0);
+
+            /*
+            // Initial Positioning
+            FR.setPower(-0.25);
+            BR.setPower(-0.25);
+            FL.setPower(-0.25);
+            BL.setPower(-0.25);
+            sleep(300);
+            FR.setPower(0);
+            BR.setPower(0);
+            FR.setPower(0);
+            BR.setPower(0);
+            turnSpeed(-20 , 1.0);
+
+
+            // 1st Move Forward
+            FR.setPower(-0.25);
+            BR.setPower(-0.25);
+            FL.setPower(-0.25);
+            BL.setPower(-0.25);
+            sleep(500);
+            FR.setPower(0);
+            BR.setPower(0);
+            FR.setPower(0);
+            BR.setPower(0);
+
+            // 1st Turn 2nd Move Forward
+            turnSpeed(90 , 1.0);
+            telemetry.addData("turn: " , "first");
+            telemetry.update();
+            sleep(3000);
+            FR.setPower(-0.40);
+            BR.setPower(-0.40);
+            FL.setPower(-0.40);
+            BL.setPower(-0.40);
+            sleep(1370);
+            FR.setPower(0);
+            BR.setPower(0);
+            FR.setPower(0);
+            BR.setPower(0);
+
+            // 2nd Turn 3rd Move Forward
+            turnSpeed(-90 , -1.0);
+            telemetry.addData("turn: " , "second");
+            telemetry.update();
+            sleep(3000);
+            FR.setPower(-0.25);
+            BR.setPower(-0.25);
+            FL.setPower(-0.25);
+            BL.setPower(-0.25);
+            sleep(1500);
+            FR.setPower(0);
+            BR.setPower(0);
+            FR.setPower(0);
+            BR.setPower(0);
+                /*drive(-100,0);
+                flywheel.setPower(0.25);
+                sleep(500);
+                turn(-90);
+                drive(-1000, 0); /
+            flywheel.setPower(-0.5);
+            sleep(3500);
+            flywheel.setPower(0);
+
+            // Backup
+            FR.setPower(0.25);
+            BR.setPower(0.25);
+            FL.setPower(0.25);
+            BL.setPower(0.25);
+            sleep(800);
+            FR.setPower(0);
+            BR.setPower(0);
+            FR.setPower(0);
+            BR.setPower(0);
+
+            turnSpeed(-270 , -1.0);
+            telemetry.addData("turn: " , "last");
+            telemetry.update();
+
+
+            FR.setPower(-1.0);
+            BR.setPower(-1.0);
+            FL.setPower(-1.0);
+            BL.setPower(-1.0);
+            sleep(2600);
+            FR.setPower(0);
+            BR.setPower(0);
+            FR.setPower(0);
+            BR.setPower(0);
+*/
+        idle();
+        //}
+    }
+
+    private void moveForward(double power , int time) {
+        FR.setPower(power);
+        BR.setPower(power);
+        FL.setPower(power);
+        BL.setPower(power);
+        sleep(time);
+        FR.setPower(0);
+        BR.setPower(0);
+        FR.setPower(0);
+        BR.setPower(0);
     }
     public void turn(double angle) {
         /*
         Reads the IMU's heading, then sets it to the be the target
          */
-        double target = imu.normalizeAngle(imu.getAngle() + angle);
+       /* double target = imu.normalizeAngle(imu.getAngle() + angle);
 
         double left, right;
 
@@ -123,7 +306,8 @@ public class AutoMain extends LinearOpMode {
             telemetry.update();
 
         }
-
+*/
+        //wheel diameter: 98.2
         stopMotors();
 
     }
@@ -132,6 +316,12 @@ public class AutoMain extends LinearOpMode {
             motor.setPower(speed);
         }
     }
+
+    /**
+     * use opencv libraries to search for the white capstone
+     */
+
+
     public void stopMotors() {
         powerMotors(0);
     }
@@ -276,4 +466,14 @@ public class AutoMain extends LinearOpMode {
             return Math.max(-max, Math.min(value, -min));
     }
 
+    public static double normalizeAngle(double angle) {
+        if (angle < -180) {
+            return normalizeAngle(angle + 360);
+        } else if (angle > 180) {
+            return normalizeAngle(angle - 360);
+        }
+        return angle;
+    }
+
 }
+
