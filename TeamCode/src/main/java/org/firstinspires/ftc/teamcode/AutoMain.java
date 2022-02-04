@@ -92,9 +92,9 @@ public class AutoMain extends LinearOpMode {
 
         waitForStart();
         //while (opModeIsActive()) {
-            // gripperServo.setPosition(1);
-            //@TODO: MAP OUT PATH
-            // ticks
+        // gripperServo.setPosition(1);
+        //@TODO: MAP OUT PATH
+        // ticks
             /*
             drive(100 , 0);
             powerMotors(0.75 , armMotor);
@@ -104,8 +104,8 @@ public class AutoMain extends LinearOpMode {
             drive(212 , 0);
             idle();
             */
-            // slides.setPower(0.75);
-            // sleep(1000);
+        // slides.setPower(0.75);
+        // sleep(1000);
             /*
             telemetry.addData("Gripper: " , gripperServo.getPosition());
             telemetry.update();
@@ -116,60 +116,60 @@ public class AutoMain extends LinearOpMode {
             // gripperServo.setPosition(0.9);
             slides.setPower(0);
             */
-            // sleep(5000);
-            // slides.setPower(-0.75);
-            // sleep(1000);
-            // slides.setPower(0);
-            // powerMotors(-0.5 , FR , BR);
-            // powerMotors(0.5 , FL , BL);
-            //for(int i = 0 ; i < 3 ; i++) {
-            
-            
+        // sleep(5000);
+        // slides.setPower(-0.75);
+        // sleep(1000);
+        // slides.setPower(0);
+        // powerMotors(-0.5 , FR , BR);
+        // powerMotors(0.5 , FL , BL);
+        //for(int i = 0 ; i < 3 ; i++) {
+
+
             /*
             {
             // 1st Move
             moveForward(.3,250);
             moveForward(-0.5 , 250);
-            
+
             // 1st Turn and 2nd Move Forward
             turnSpeed(90 , 1.0);
             moveForward(-0.5 , 1800);
-            
+
             // 2nd Turn and 3rd Move Forward
             turnSpeed(-90 , -1.0);
             moveForward(-0.5 , 1450);
-            
+
                 /*drive(-100,0);
                 flywheel.setPower(0.25);
                 sleep(500);
                 turn(-90);
-                drive(-1000, 0); 
-                
+                drive(-1000, 0);
+
             // Ducky go spin
             flywheel.setPower(-0.50);
             sleep(2000);
             flywheel.setPower(0);
             sleep(2000);
-            
+
             // Backup
             moveForward(0.5 , 800);
-            
+
             // Zoom Zoom to warehouse
             turnSpeed(107 , 1.0);
             moveForward(-1.0 , 2600);
             }
             */
-            
-            FR.setPower(-1.0);
-            BR.setPower(-1.0);
-            FL.setPower(-1.0);
-            BL.setPower(-1.0);
-            sleep(1300);
-            FR.setPower(0);
-            BR.setPower(0);
-            FR.setPower(0);
-            BR.setPower(0);
-            
+
+        FR.setPower(-1.0);
+        BR.setPower(-1.0);
+        FL.setPower(-1.0);
+        BL.setPower(-1.0);
+        sleep(1300);
+        FR.setPower(0);
+        BR.setPower(0);
+        FR.setPower(0);
+        BR.setPower(0);
+
             /*
             // Initial Positioning
             FR.setPower(-0.25);
@@ -183,7 +183,7 @@ public class AutoMain extends LinearOpMode {
             BR.setPower(0);
             turnSpeed(-20 , 1.0);
 
-            
+
             // 1st Move Forward
             FR.setPower(-0.25);
             BR.setPower(-0.25);
@@ -194,7 +194,7 @@ public class AutoMain extends LinearOpMode {
             BR.setPower(0);
             FR.setPower(0);
             BR.setPower(0);
-            
+
             // 1st Turn 2nd Move Forward
             turnSpeed(90 , 1.0);
             telemetry.addData("turn: " , "first");
@@ -209,7 +209,7 @@ public class AutoMain extends LinearOpMode {
             BR.setPower(0);
             FR.setPower(0);
             BR.setPower(0);
-            
+
             // 2nd Turn 3rd Move Forward
             turnSpeed(-90 , -1.0);
             telemetry.addData("turn: " , "second");
@@ -232,7 +232,7 @@ public class AutoMain extends LinearOpMode {
             flywheel.setPower(-0.5);
             sleep(3500);
             flywheel.setPower(0);
-            
+
             // Backup
             FR.setPower(0.25);
             BR.setPower(0.25);
@@ -243,12 +243,12 @@ public class AutoMain extends LinearOpMode {
             BR.setPower(0);
             FR.setPower(0);
             BR.setPower(0);
-            
+
             turnSpeed(-270 , -1.0);
             telemetry.addData("turn: " , "last");
             telemetry.update();
-            
-            
+
+
             FR.setPower(-1.0);
             BR.setPower(-1.0);
             FL.setPower(-1.0);
@@ -259,10 +259,10 @@ public class AutoMain extends LinearOpMode {
             FR.setPower(0);
             BR.setPower(0);
 */
-            idle();
+        idle();
         //}
     }
-    
+
     private void moveForward(double power , int time) {
         FR.setPower(power);
         BR.setPower(power);
@@ -278,7 +278,7 @@ public class AutoMain extends LinearOpMode {
         /*
         Reads the IMU's heading, then sets it to the be the target
          */
-        double target = imu.normalizeAngle(imu.getAngle() + angle);
+       /* double target = imu.normalizeAngle(imu.getAngle() + angle);
 
         double left, right;
 
@@ -306,7 +306,8 @@ public class AutoMain extends LinearOpMode {
             telemetry.update();
 
         }
-
+*/
+        //wheel diameter: 98.2
         stopMotors();
 
     }
@@ -315,6 +316,12 @@ public class AutoMain extends LinearOpMode {
             motor.setPower(speed);
         }
     }
+
+    /**
+     * use opencv libraries to search for the white capstone
+     */
+
+
     public void stopMotors() {
         powerMotors(0);
     }
@@ -458,7 +465,7 @@ public class AutoMain extends LinearOpMode {
         else
             return Math.max(-max, Math.min(value, -min));
     }
-    
+
     public static double normalizeAngle(double angle) {
         if (angle < -180) {
             return normalizeAngle(angle + 360);
@@ -466,10 +473,6 @@ public class AutoMain extends LinearOpMode {
             return normalizeAngle(angle - 360);
         }
         return angle;
-    }
-
-    public static void turn(int angle) {
-        
     }
 
 }

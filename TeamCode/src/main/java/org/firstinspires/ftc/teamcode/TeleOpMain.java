@@ -18,11 +18,6 @@ public class TeleOpMain extends LinearOpMode {
         FR = hardwareMap.get(DcMotor.class, "FR");
         BL = hardwareMap.get(DcMotor.class, "BL");
         BR = hardwareMap.get(DcMotor.class, "BR");
-        intake = hardwareMap.get(DcMotor.class, "intake");
-        intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        intake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        intake.setTargetPosition(0);
-        intake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slides = hardwareMap.get(DcMotor.class, "slides");
         outtake = hardwareMap.get(Servo.class, "outtake");
         gripper = hardwareMap.get(Servo.class ,"gripper");
@@ -55,37 +50,6 @@ public class TeleOpMain extends LinearOpMode {
             gripperControl();
             flywheelControl();
             outtakeControl();
-            intakeControl();
-        }
-    }
-    void intakeControl() {
-        if (gamepad2.a) {
-            /*
-            intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            intake.setTargetPosition(1500) //experiment with value
-            intake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            intake.setPower(0.5);
-            while (intake.isBusy()) {
-                telemetry.addData("Target Position", 1500);
-                telemtry.addData("Current Position", intake.getCurrentPosition());
-                telemtry.update();           
-            }
-            */
-            intake.setPower(-0.5);
-        }
-        if (gamepad2.b) {
-            intake.setPower(0.5);
-            /*
-            intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            intake.setTargetPosition(750) //experiment with value
-            intake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            intake.setPower(-0.5);
-            while (intake.isBusy()) {
-                telemetry.addData("Target Position", 750);
-                telemtry.addData("Current Position", intake.getCurrentPosition());
-                telemtry.update();   
-            }
-            */
         }
     }
     void driveControl() {
@@ -134,10 +98,10 @@ public class TeleOpMain extends LinearOpMode {
             arm.setPower(-1);
         }
     }
-    
+
     void gripperControl() {
-        int dpad_right_count = 0; 
-        directionState = false;      
+        int dpad_right_count = 0;
+        directionState = false;
         if(directionState == false){
             if(gamepad2.dpad_right){
                 dpad_right_count += 1;
@@ -153,13 +117,13 @@ public class TeleOpMain extends LinearOpMode {
 
                 gripper.setPosition(0.915);
             }
-        } 
+        }
         telemetry.addData("Direction State:", directionState);
         telemetry.addData("dpad_right_count:", dpad_right_count);
     }
     void flywheelControl() {
-        int dpad_left_count = 0; 
-        directionState = false;      
+        int dpad_left_count = 0;
+        directionState = false;
         if(directionState == false){
             if(gamepad2.dpad_left){
                 dpad_left_count += 1;
@@ -175,7 +139,7 @@ public class TeleOpMain extends LinearOpMode {
 
                 flywheel.setPower(0);
             }
-        } 
+        }
         telemetry.addData("Direction State:", directionState);
         telemetry.addData("dpad_left_count:", dpad_left_count);
     }

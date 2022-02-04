@@ -29,7 +29,7 @@ public class ScrimmAuto extends LinearOpMode {
      * Purpose: autonomous program for FTC Freight Frenzy: park in the depot for 10 points
      *          30-second Autonomous period
      * Revision: 2.0
- */
+     */
     private BNO055IMU imu;
     private Orientation angles;
     //Iteration 1
