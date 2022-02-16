@@ -8,9 +8,11 @@ import com.qualcomm.robotcore.util.Range;
 
 @TeleOp
 public class TeleOpMain extends LinearOpMode {
-    DcMotor FL, FR, BL, BR, arm, flywheel, slides;
-    Servo gripper, outtake;
+    DcMotor FL, FR, BL, BR, arm, flywheel, slides, intake;
+    Servo outtake;
     private boolean directionState;
+    double LY = gamepad1.right_stick_y;
+    double RY = gamepad1.left_stick_y;
 
 
     public void initialize() {
@@ -18,26 +20,23 @@ public class TeleOpMain extends LinearOpMode {
         FR = hardwareMap.get(DcMotor.class, "FR");
         BL = hardwareMap.get(DcMotor.class, "BL");
         BR = hardwareMap.get(DcMotor.class, "BR");
-        intake = hardwareMap.get(DcMotor.class, "intake");
-        intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        intake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        intake.setTargetPosition(0);
-        intake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slides = hardwareMap.get(DcMotor.class, "slides");
-        outtake = hardwareMap.get(Servo.class, "outtake");
-        gripper = hardwareMap.get(Servo.class ,"gripper");
+        intake = hardwareMap.get(DcMotor.class, "intake");
+        outtake = hardwareMap.get(Servo.class, "gripper");
+        // = hardwareMap.get(Servo.class ,"gripper");
         arm = hardwareMap.get(DcMotor.class, "arm");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
 
-        FR.setDirection(DcMotorSimple.Direction.REVERSE);
-        BR.setDirection(DcMotorSimple.Direction.REVERSE);
+        FL.setDirection(DcMotorSimple.Direction.REVERSE);
+        BL.setDirection(DcMotorSimple.Direction.REVERSE);
 
         FL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         FR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-
+        slides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
     }
     @Override
@@ -46,52 +45,30 @@ public class TeleOpMain extends LinearOpMode {
         initialize();
 
         waitForStart();
-
+        /*
+        slides.setTargetPosition(-3200);
+        slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slides.setPower(0.8);
+        while(slides.isBusy()) {}
+        slides.setPower(0);
+        slides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+*/
         while(opModeIsActive()) {
             driveControl();
             dpadDrive();
             slidesControl();
             armControl();
-            gripperControl();
+            //gripperControl();
             flywheelControl();
             outtakeControl();
+            telemetry.addData("Slides" , slides.getCurrentPosition());
             intakeControl();
         }
     }
-    void intakeControl() {
-        if (gamepad2.a) {
-            /*
-            intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            intake.setTargetPosition(1500) //experiment with value
-            intake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            intake.setPower(0.5);
-            while (intake.isBusy()) {
-                telemetry.addData("Target Position", 1500);
-                telemtry.addData("Current Position", intake.getCurrentPosition());
-                telemtry.update();           
-            }
-            */
-            intake.setPower(-0.5);
-        }
-        if (gamepad2.b) {
-            intake.setPower(0.5);
-            /*
-            intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            intake.setTargetPosition(750) //experiment with value
-            intake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            intake.setPower(-0.5);
-            while (intake.isBusy()) {
-                telemetry.addData("Target Position", 750);
-                telemtry.addData("Current Position", intake.getCurrentPosition());
-                telemtry.update();   
-            }
-            */
-        }
-    }
     void driveControl() {
-
-        double LY = gamepad1.left_stick_y;
-        double RY = gamepad1.right_stick_y;
+        telemetry.addData("left", LY);
+        telemetry.addData("right", RY);
+        telemetry.update();
         LY = Range.clip(LY, -0.75, 0.75);
         RY = Range.clip(RY, -0.75, 0.75);
         FL.setPower(LY);
@@ -99,6 +76,18 @@ public class TeleOpMain extends LinearOpMode {
         BL.setPower(LY);
         BR.setPower(RY);
 
+    }
+    void intakeControl() {
+        if (gamepad2.a) {
+            intake.setPower(0.9);
+        }
+        else if (gamepad2.b) {
+            intake.setPower(-0.5);
+        }
+        else {
+            intake.setPower(0);
+        }
+        
     }
     void dpadDrive() {
         if (gamepad1.dpad_up) {
@@ -112,30 +101,76 @@ public class TeleOpMain extends LinearOpMode {
             BL.setPower(.4);
             BR.setPower(.4);
         } else if (gamepad1.dpad_left) {
-            FL.setPower(.4);
-            FR.setPower(-.4);
-            BL.setPower(.4);
-            BR.setPower(-.4);
+            FL.setPower(.6);
+            FR.setPower(-.6);
+            BL.setPower(.6);
+            BR.setPower(-.6);
         } else if (gamepad1.dpad_right) {
-            FL.setPower(-.4);
-            FR.setPower(.4);
-            BL.setPower(-.4);
-            BR.setPower(.4);
+            FL.setPower(-.6);
+            FR.setPower(.6);
+            BL.setPower(-.6);
+            BR.setPower(.6);
         }
     }
     void slidesControl() {
-        slides.setPower(Range.clip(-gamepad2.left_stick_y, -1, .6));
+        if(gamepad2.y) {
+            slides.setTargetPosition(-3200);
+            slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            slides.setPower(0.8);
+            while(slides.isBusy()) {
+                telemetry.addData("Slides" , slides.getTargetPosition());
+                telemetry.update();
+                FL.setPower(LY);
+                FR.setPower(RY);
+                BL.setPower(LY);
+                BR.setPower(RY);
+            }
+            slides.setPower(0);
+        }
+        if(gamepad2.x) {
+            slides.setTargetPosition(0);
+            slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            slides.setPower(0.6);
+            while(slides.isBusy()) {
+                telemetry.addData("Slides" , slides.getTargetPosition());
+                telemetry.update();
+                FL.setPower(LY);
+                FR.setPower(RY);
+                BL.setPower(LY);
+                BR.setPower(RY);
+            }
+            slides.setPower(0);
+        }
+        /*
+        if (gamepad2.left_stick_y != 0) {
+            slides.setPower(0);
+        }
+        slides.setPower(Range.clip(gamepad2.left_stick_y, -1.0, 1.0));*/
+        /*with encoders
+        slides.set
+        */
     }
     void armControl() {
         if (gamepad2.dpad_up) {
-            arm.setPower(1);
+            arm.setPower(0.4);
         }
         else if (gamepad2.dpad_down) {
-            arm.setPower(-1);
+            arm.setPower(-0.4);
+        }
+        else{
+            arm.setTargetPosition(0);
+            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            arm.setPower(0.6);
+            while(slides.isBusy()) {
+                telemetry.addData("Arm" , arm.getTargetPosition());
+                telemetry.update();
+            }
+            slides.setPower(0);
         }
     }
-    
+    /*
     void gripperControl() {
+        telemetry.addData("gripper", 1);
         int dpad_right_count = 0; 
         directionState = false;      
         if(directionState == false){
@@ -156,38 +191,40 @@ public class TeleOpMain extends LinearOpMode {
         } 
         telemetry.addData("Direction State:", directionState);
         telemetry.addData("dpad_right_count:", dpad_right_count);
-    }
+    }*/
     void flywheelControl() {
         int dpad_left_count = 0; 
-        directionState = false;      
-        if(directionState == false){
             if(gamepad2.dpad_left){
                 dpad_left_count += 1;
-                directionState = true;
-
-                flywheel.setPower(0.2);
+                flywheel.setPower(-0.65);
             }
-        }
-        else {
-            if(gamepad2.dpad_left){
+
+            if(gamepad2.dpad_right){
                 dpad_left_count += 1;
-                directionState = false;
 
                 flywheel.setPower(0);
             }
-        } 
         telemetry.addData("Direction State:", directionState);
         telemetry.addData("dpad_left_count:", dpad_left_count);
     }
     void outtakeControl(){
+        telemetry.addData("bumpers", 1);
         boolean bumperPressed = false;
         if(gamepad2.right_bumper) {
+            
+          
             bumperPressed = true;
             directionState = true;
-            gripper.setPosition(0.435);
+            outtake.setPosition(0.175);
         }
-        else {
-            gripper.setPosition(0.915);
+        
+        else if (gamepad2.left_bumper)
+        {
+            bumperPressed = true;
+            directionState = true;
+            outtake.setPosition(0.7);
+            sleep(200);
+            outtake.setPosition(0.175);
         }
         telemetry.addData("bumperPressed? ", bumperPressed);
     }
