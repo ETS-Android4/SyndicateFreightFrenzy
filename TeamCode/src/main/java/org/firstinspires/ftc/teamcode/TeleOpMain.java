@@ -8,8 +8,9 @@ import com.qualcomm.robotcore.util.Range;
 
 @TeleOp
 public class TeleOpMain extends LinearOpMode {
-    DcMotor FL, FR, BL, BR, arm, flywheel, slides, intake;
+    DcMotor FL, FR, BL, BR, flywheel, slides, intake;
     Servo outtake;
+    CRServo intakeCR1, intakeCR2;
     private boolean directionState;
     double LY = gamepad1.right_stick_y;
     double RY = gamepad1.left_stick_y;
@@ -22,9 +23,10 @@ public class TeleOpMain extends LinearOpMode {
         BR = hardwareMap.get(DcMotor.class, "BR");
         slides = hardwareMap.get(DcMotor.class, "slides");
         intake = hardwareMap.get(DcMotor.class, "intake");
+        intakeCR1 = hardwareMap.get(DcMotor.class, "intakeCR1");
+        intakeCR2 = hardwareMap.get(DcMotor.class, "intakeCR2");
         outtake = hardwareMap.get(Servo.class, "gripper");
         // = hardwareMap.get(Servo.class ,"gripper");
-        arm = hardwareMap.get(DcMotor.class, "arm");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
 
         FL.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -89,6 +91,20 @@ public class TeleOpMain extends LinearOpMode {
         }
         
     }
+    void intakeCRControl {
+        if (gamepad2.dpad_up) {
+            intakeCR1.setPower(0.5);
+            intakeCR2.setPower(-0.5);
+        }
+        else if (gamepad2.dpad_down) {
+            intakeCR1.setPower(-0.5);
+            intakeCR2.setPower(0.5);
+        }
+        else {
+            intakeCR1.setPower(0);
+            intakeCR2.setPower(0);
+        }
+    }
     void dpadDrive() {
         if (gamepad1.dpad_up) {
             FL.setPower(-.4);
@@ -149,24 +165,6 @@ public class TeleOpMain extends LinearOpMode {
         /*with encoders
         slides.set
         */
-    }
-    void armControl() {
-        if (gamepad2.dpad_up) {
-            arm.setPower(0.4);
-        }
-        else if (gamepad2.dpad_down) {
-            arm.setPower(-0.4);
-        }
-        else{
-            arm.setTargetPosition(0);
-            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            arm.setPower(0.6);
-            while(slides.isBusy()) {
-                telemetry.addData("Arm" , arm.getTargetPosition());
-                telemetry.update();
-            }
-            slides.setPower(0);
-        }
     }
     /*
     void gripperControl() {
