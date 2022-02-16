@@ -23,8 +23,8 @@ public class TeleOpMain extends LinearOpMode {
         BR = hardwareMap.get(DcMotor.class, "BR");
         slides = hardwareMap.get(DcMotor.class, "slides");
         intake = hardwareMap.get(DcMotor.class, "intake");
-        intakeCR1 = hardwareMap.get(DcMotor.class, "intakeCR1");
-        intakeCR2 = hardwareMap.get(DcMotor.class, "intakeCR2");
+        intakeCR1 = hardwareMap.get(CRServo.class, "intakeCR1");
+        intakeCR2 = hardwareMap.get(CRServo.class, "intakeCR2");
         outtake = hardwareMap.get(Servo.class, "gripper");
         // = hardwareMap.get(Servo.class ,"gripper");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
