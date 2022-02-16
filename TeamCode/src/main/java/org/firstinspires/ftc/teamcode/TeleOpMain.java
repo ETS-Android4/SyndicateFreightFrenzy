@@ -82,28 +82,20 @@ public class TeleOpMain extends LinearOpMode {
     void intakeControl() {
         if (gamepad2.a) {
             intake.setPower(0.9);
-        }
-        else if (gamepad2.b) {
-            intake.setPower(-0.5);
-        }
-        else {
-            intake.setPower(0);
-        }
-        
-    }
-    void intakeCRControl {
-        if (gamepad2.dpad_up) {
             intakeCR1.setPower(0.5);
             intakeCR2.setPower(-0.5);
         }
-        else if (gamepad2.dpad_down) {
+        else if (gamepad2.b) {
+            intake.setPower(-0.5);
             intakeCR1.setPower(-0.5);
             intakeCR2.setPower(0.5);
         }
         else {
+            intake.setPower(0);
             intakeCR1.setPower(0);
             intakeCR2.setPower(0);
         }
+        
     }
     void dpadDrive() {
         if (gamepad1.dpad_up) {
