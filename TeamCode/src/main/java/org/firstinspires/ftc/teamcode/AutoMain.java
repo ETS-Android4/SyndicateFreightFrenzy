@@ -13,29 +13,30 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.*;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-
-enum StartPosition {
+/*
+public enum StartPosition {
     RED_DEPOT,
     RED_WAREHOUSE,
     BLUE_DEPOT,
     BLUE_WAREHOUSE
 }
-enum ParkLocation {
+public enum ParkLocation {
     DEPOT,
     WAREHOUSE
 }
-
+*/
 @Autonomous
 public class AutoMain extends LinearOpMode {
 
     //CHANGE THESE DURING TEAM BRIEF WITH ALLIANCE MEMBER
     //SHOULD ALLOW FOR SOME FLEXIBILITY DEPENDING ON THEIR AUTONOMOUS
     //MAY SCRAP THIS IDEA
+    /*
     private StartPosition startPos = StartPosition.BLUE_DEPOT;
     private ParkLocation parkLocation = ParkLocation.DEPOT;
     private boolean spinCarousel = true;
     private boolean placeBlockOnShipping = true;
-
+*/
     //Tick rate is 384.5 PPR
     //Wheel radius is 4.528 inches
     //384.5 * (PI/90)
