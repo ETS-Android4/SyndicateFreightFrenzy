@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.util.Range;
 public class TeleOpMain extends LinearOpMode {
     DcMotor FL, FR, BL, BR, flywheel, slides, intake;
     Servo outtake;
-    CRServo intakeCR1, intakeCR2;
     private boolean directionState;
     double LY = gamepad1.right_stick_y;
     double RY = gamepad1.left_stick_y;
@@ -23,8 +22,6 @@ public class TeleOpMain extends LinearOpMode {
         BR = hardwareMap.get(DcMotor.class, "BR");
         slides = hardwareMap.get(DcMotor.class, "slides");
         intake = hardwareMap.get(DcMotor.class, "intake");
-        intakeCR1 = hardwareMap.get(CRServo.class, "intakeCR1");
-        intakeCR2 = hardwareMap.get(CRServo.class, "intakeCR2");
         outtake = hardwareMap.get(Servo.class, "gripper");
         // = hardwareMap.get(Servo.class ,"gripper");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
@@ -82,18 +79,12 @@ public class TeleOpMain extends LinearOpMode {
     void intakeControl() {
         if (gamepad2.a) {
             intake.setPower(0.9);
-            intakeCR1.setPower(0.5);
-            intakeCR2.setPower(-0.5);
         }
         else if (gamepad2.b) {
             intake.setPower(-0.5);
-            intakeCR1.setPower(-0.5);
-            intakeCR2.setPower(0.5);
         }
         else {
             intake.setPower(0);
-            intakeCR1.setPower(0);
-            intakeCR2.setPower(0);
         }
         
     }
