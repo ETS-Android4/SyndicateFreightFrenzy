@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 // ****READ QUALCOMM PACKAGE Docs
 
 
-@Autonomous
+@Autonomous(name = "Anthony's Mother")
 
 public class TestEncoderAuto extends LinearOpMode {
 
