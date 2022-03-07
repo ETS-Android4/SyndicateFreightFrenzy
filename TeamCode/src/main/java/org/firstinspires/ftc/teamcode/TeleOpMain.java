@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.util.Range;
 
 @TeleOp
 public class TeleOpMain extends LinearOpMode {
-    DcMotor FL, FR, BL, BR, flywheel, slides, intake;
-    Servo outtake;
+    DcMotor FL, FR, BL, BR, flywheel, slides, intake, arm;
+    Servo outtake, hook;
     private boolean directionState;
     double LY = gamepad1.right_stick_y;
     double RY = gamepad1.left_stick_y;
@@ -23,7 +23,8 @@ public class TeleOpMain extends LinearOpMode {
         slides = hardwareMap.get(DcMotor.class, "slides");
         intake = hardwareMap.get(DcMotor.class, "intake");
         outtake = hardwareMap.get(Servo.class, "gripper");
-        // = hardwareMap.get(Servo.class ,"gripper");
+        hook = hardwareMap.get(Servo.class, "hook");
+        arm = hardwareMap.get(DcMotor.class, "arm");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
 
         FL.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -78,15 +79,30 @@ public class TeleOpMain extends LinearOpMode {
     }
     void intakeControl() {
         if (gamepad2.a) {
-            intake.setPower(0.9);
+            intake.setPower(1);
         }
         else if (gamepad2.b) {
-            intake.setPower(-0.5);
+            intake.setPower(-1);
         }
         else {
             intake.setPower(0);
         }
         
+    }
+    void armControl() {
+        if (gamepad1.dpad_up) {
+            arm.setPower(-0.4);
+        } 
+        else if (gamepad1.dpad_down) {
+            arm.setPower(0.4);
+        }
+        else {
+            arm.setPower(0);
+        }
+           
+    }
+    void hookControl() {
+        //trying to find a button to control this thing
     }
     void dpadDrive() {
         if (gamepad1.dpad_up) {
