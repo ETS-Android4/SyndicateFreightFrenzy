@@ -9,9 +9,10 @@ import com.qualcomm.robotcore.util.Range;
 @TeleOp
 public class TeleOpMain extends LinearOpMode {
     DcMotor FL, FR, BL, BR, arm, flywheel, slides, intake;
-    Servo outtake;
+    Servo outtake, hook;
     private boolean directionState;
     int slideStartPosition;
+    int hookCounter;
 
 
     public void initialize() {
@@ -25,6 +26,7 @@ public class TeleOpMain extends LinearOpMode {
         // = hardwareMap.get(Servo.class ,"gripper");
         arm = hardwareMap.get(DcMotor.class, "arm");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
+        hook = hardwareMap.get(DcMotor.class, "hook");
 
         FL.setDirection(DcMotorSimple.Direction.REVERSE);
         BL.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -136,6 +138,18 @@ public class TeleOpMain extends LinearOpMode {
         }
         else{
             arm.setPower(0);
+        }
+    }
+    void hookControl() {
+        if (gamepad2.b) {
+            if (hookCounter == 1) {
+                hook.setPosition(0.7);
+                hookCounter--;
+            }
+            else {
+                hook.setPosition(-0.4);
+                hookCounter++;
+            }
         }
     }
     /*
