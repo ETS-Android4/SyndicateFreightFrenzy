@@ -8,23 +8,23 @@ import com.qualcomm.robotcore.util.Range;
 
 @TeleOp
 public class TeleOpMain extends LinearOpMode {
-    DcMotor FL, FR, BL, BR, arm, flywheel, slides, intake;
+    DcMotorEx FL, FR, BL, BR, arm, flywheel, slides, intake;
     Servo outtake;
     private boolean directionState;
     int slideStartPosition;
 
 
     public void initialize() {
-        FL = hardwareMap.get(DcMotor.class, "FL");
-        FR = hardwareMap.get(DcMotor.class, "FR");
-        BL = hardwareMap.get(DcMotor.class, "BL");
-        BR = hardwareMap.get(DcMotor.class, "BR");
-        slides = hardwareMap.get(DcMotor.class, "slides");
-        //intake = hardwareMap.get(DcMotor.class, "intake");
+        FL = hardwareMap.get(DcMotorEx.class, "FL");
+        FR = hardwareMap.get(DcMotorEx.class, "FR");
+        BL = hardwareMap.get(DcMotorEx.class, "BL");
+        BR = hardwareMap.get(DcMotorEx.class, "BR");
+        slides = hardwareMap.get(DcMotorEx.class, "slides");
+        //intake = hardwareMap.get(DcMotorEx.class, "intake");
         outtake = hardwareMap.get(Servo.class, "outtake");
         // = hardwareMap.get(Servo.class ,"gripper");
-        arm = hardwareMap.get(DcMotor.class, "arm");
-        flywheel = hardwareMap.get(DcMotor.class, "flywheel");
+        arm = hardwareMap.get(DcMotorEx.class, "arm");
+        flywheel = hardwareMap.get(DcMotorEx.class, "flywheel");
 
         FL.setDirection(DcMotorSimple.Direction.REVERSE);
         BL.setDirection(DcMotorSimple.Direction.REVERSE);

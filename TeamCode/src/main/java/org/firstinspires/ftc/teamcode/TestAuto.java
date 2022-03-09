@@ -23,7 +23,7 @@ public class TestAuto extends LinearOpMode {
 
     private DcMotor FL, FR, BL, BR, armMotor, flywheel , slides;
     private Motors leftMotors , rightMotors , backMotors , frontMotors , allMotors;
-    private Servo gripperServo;
+    private Servo outtake;
     private IMU imu;
     private Orientation angles;
 
@@ -32,7 +32,7 @@ public class TestAuto extends LinearOpMode {
     // ~49 ticks = 30 degrees (With Load) = 1 inch
     final int INCH = 49;
 
-    Async async = new Async(telemetry);
+    Async async = new Async(telemetry , this);
 
     @Override
     public void runOpMode() {
@@ -54,7 +54,7 @@ public class TestAuto extends LinearOpMode {
         BR = hardwareMap.get(DcMotor.class, "BL"); // Port 3
         armMotor = hardwareMap.get(DcMotor.class, "arm");
         slides = hardwareMap.get(DcMotor.class, "slides");
-        gripperServo = hardwareMap.get(Servo.class, "gripper");
+        outtake = hardwareMap.get(Servo.class, "outtake");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
 
         leftMotors = new Motors(FL , BL);

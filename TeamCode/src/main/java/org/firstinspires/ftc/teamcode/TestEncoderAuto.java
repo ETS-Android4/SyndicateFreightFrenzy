@@ -1,38 +1,43 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.checkerframework.checker.units.qual.A;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-
+import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 
 
 // ****READ QUALCOMM PACKAGE Docs
 
 
-@Autonomous(name = "Anthony's Mother")
+@Autonomous
 
 public class TestEncoderAuto extends LinearOpMode {
 
 
-    private DcMotor FL, FR, BL, BR, armMotor, flywheel , slides;
-    private Motors leftMotors , rightMotors , backMotors , frontMotors , allMotors;
-    private Servo gripperServo;
+    // Try converting to DcMotorEx
+    private DcMotorEx FL, FR, BL, BR, armMotor, flywheel , slides;
+    private MotorsEx leftMotors , rightMotors , backMotors , frontMotors , allMotors;
+    private Servo outtake;
     private IMU imu;
     private Orientation angles;
+    private LynxModule lynx;
 
     // 548 ticks = 360 degrees (Without Load)
     // 580 tick = 360 degrees (With Load) = 12 inches
     // ~49 ticks = 30 degrees (With Load) = 1 inch
     final int INCH = 49;
 
-    Async async = new Async(telemetry);
+    Async async = new Async(telemetry , this);
     double checkpoint = 0;
 
     @Override
@@ -49,20 +54,22 @@ public class TestEncoderAuto extends LinearOpMode {
         imu = new IMU(hardwareMap);
         //imu.initialize(parameters);
 
-        FR = hardwareMap.get(DcMotor.class, "FL"); // Port 1
-        FL = hardwareMap.get(DcMotor.class, "FR"); // Port 2
-        BL = hardwareMap.get(DcMotor.class, "BR"); // Port 0
-        BR = hardwareMap.get(DcMotor.class, "BL"); // Port 3
-        armMotor = hardwareMap.get(DcMotor.class, "arm");
-        slides = hardwareMap.get(DcMotor.class, "slides");
-        gripperServo = hardwareMap.get(Servo.class, "gripper");
-        flywheel = hardwareMap.get(DcMotor.class, "flywheel");
+        FR = hardwareMap.get(DcMotorEx.class, "FL"); // Port 1
+        FL = hardwareMap.get(DcMotorEx.class, "FR"); // Port 2
+        BL = hardwareMap.get(DcMotorEx.class, "BR"); // Port 0
+        BR = hardwareMap.get(DcMotorEx.class, "BL"); // Port 3
+        armMotor = hardwareMap.get(DcMotorEx.class, "arm");
+        slides = hardwareMap.get(DcMotorEx.class, "slides");
+        outtake = hardwareMap.get(Servo.class, "outtake");
+        flywheel = hardwareMap.get(DcMotorEx.class, "flywheel");
+        // Workout Voltage Sensor Configurations
+        lynx = (LynxModule)hardwareMap.get(LynxModule.class, "Expansion Hub 1");
 
-        leftMotors = new Motors(FL , BL);
-        rightMotors = new Motors(FR , BR);
-        backMotors = new Motors(BL , BR);
-        frontMotors = new Motors(FL , FR);
-        allMotors = new Motors(FL , BL , FR , BR);
+        leftMotors = new MotorsEx(FL , BL);
+        rightMotors = new MotorsEx(FR , BR);
+        backMotors = new MotorsEx(BL , BR);
+        frontMotors = new MotorsEx(FL , FR);
+        allMotors = new MotorsEx(FL , BL , FR , BR);
 
         // FORWARD = positive = forward (right)
         // REVERSE = negative = forward (right)
@@ -88,6 +95,20 @@ public class TestEncoderAuto extends LinearOpMode {
 
         // testMotors((byte)1);
         // testMotors((byte)-1);
+
+        allMotors.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        allMotors.setPower(0.75);
+        async.perpetual(() -> {
+            if(lynx.getInputVoltage(VoltageUnit.VOLTS) < 10 ||
+                lynx.getCurrent(CurrentUnit.AMPS) > 18.69) {
+                allMotors.off();
+            }
+        });
+        while(opModeIsActive()) {
+            telemetry.addData("Voltage" , lynx.getInputVoltage(VoltageUnit.VOLTS));
+            telemetry.addData("FL Velocity" , FL.getVelocity());
+            telemetry.update();
+        }
 
         while(opModeIsActive()) {
 

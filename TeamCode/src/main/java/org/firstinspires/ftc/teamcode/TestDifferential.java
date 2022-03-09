@@ -26,7 +26,7 @@ public class TestDifferential extends LinearOpMode {
     private Motors leftMotors , rightMotors , backMotors , frontMotors , allMotors;
     private IMU imu;
     private Orientation angles;
-    Async async = new Async(telemetry);
+    Async async = new Async(telemetry , this);
 
     @Override
     public void runOpMode() {
