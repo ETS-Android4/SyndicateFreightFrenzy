@@ -8,23 +8,25 @@ import com.qualcomm.robotcore.util.Range;
 
 @TeleOp
 public class TeleOpMain extends LinearOpMode {
-    DcMotorEx FL, FR, BL, BR, arm, flywheel, slides, intake;
-    Servo outtake;
+    DcMotor FL, FR, BL, BR, arm, flywheel, slides, intake;
+    Servo outtake, hook;
     private boolean directionState;
     int slideStartPosition;
+    int hookCounter;
 
 
     public void initialize() {
-        FL = hardwareMap.get(DcMotorEx.class, "FL");
-        FR = hardwareMap.get(DcMotorEx.class, "FR");
-        BL = hardwareMap.get(DcMotorEx.class, "BL");
-        BR = hardwareMap.get(DcMotorEx.class, "BR");
-        slides = hardwareMap.get(DcMotorEx.class, "slides");
-        //intake = hardwareMap.get(DcMotorEx.class, "intake");
+        FL = hardwareMap.get(DcMotor.class, "FL");
+        FR = hardwareMap.get(DcMotor.class, "FR");
+        BL = hardwareMap.get(DcMotor.class, "BL");
+        BR = hardwareMap.get(DcMotor.class, "BR");
+        slides = hardwareMap.get(DcMotor.class, "slides");
+        //intake = hardwareMap.get(DcMotor.class, "intake");
         outtake = hardwareMap.get(Servo.class, "outtake");
         // = hardwareMap.get(Servo.class ,"gripper");
-        arm = hardwareMap.get(DcMotorEx.class, "arm");
-        flywheel = hardwareMap.get(DcMotorEx.class, "flywheel");
+        arm = hardwareMap.get(DcMotor.class, "arm");
+        flywheel = hardwareMap.get(DcMotor.class, "flywheel");
+        hook = hardwareMap.get(DcMotor.class, "hook");
 
         FL.setDirection(DcMotorSimple.Direction.REVERSE);
         BL.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -76,10 +78,10 @@ public class TeleOpMain extends LinearOpMode {
     /*
     void intakeControl() {
         if (gamepad2.a) {
-            intake.setPower(0.6);
+            intake.setPower(1);
         }
         else if (gamepad2.b) {
-            intake.setPower(-0.5);
+            intake.setPower(-1);
         }
         else {
             intake.setPower(0);
@@ -136,6 +138,18 @@ public class TeleOpMain extends LinearOpMode {
         }
         else{
             arm.setPower(0);
+        }
+    }
+    void hookControl() {
+        if (gamepad2.b) {
+            if (hookCounter == 1) {
+                hook.setPosition(0.7);
+                hookCounter--;
+            }
+            else {
+                hook.setPosition(-0.4);
+                hookCounter++;
+            }
         }
     }
     /*
