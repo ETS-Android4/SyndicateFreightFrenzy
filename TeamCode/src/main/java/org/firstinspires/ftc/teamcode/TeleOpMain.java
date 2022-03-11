@@ -141,15 +141,13 @@ public class TeleOpMain extends LinearOpMode {
         }
     }
     void hookControl() {
-        if (gamepad2.b) {
-            if (hookCounter == 1) {
-                hook.setPosition(0.7);
-                hookCounter--;
-            }
-            else {
-                hook.setPosition(-0.4);
-                hookCounter++;
-            }
+        if (gamepad2.b) 
+        {
+               hook.setPosition(0.7);
+         
+        }
+        else if (gamepad2.y) {
+               hook.setPosition(-0.4);
         }
     }
     /*
