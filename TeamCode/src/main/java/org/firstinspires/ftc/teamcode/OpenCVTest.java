@@ -10,7 +10,7 @@ import org.opencv.core.Scalar;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-
+import org.openftc.easyopencv.OpenCvInternalCamera;
 
 
 @Autonomous(name="OpenCVTest", group="tests")
@@ -39,7 +39,7 @@ public class OpenCVTest extends LinearOpMode {
     {
         // OpenCV webcam
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        webcam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.FRONT, cameraMonitorViewId);
         //OpenCV Pipeline
 
         pipeline = new ContourPipeline(0.2, 0.2, 0.2, 0.2);

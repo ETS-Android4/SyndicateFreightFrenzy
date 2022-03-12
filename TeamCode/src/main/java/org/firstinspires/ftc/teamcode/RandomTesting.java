@@ -21,7 +21,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 
 @Autonomous
 
-public class TestEncoderAuto extends LinearOpMode {
+public class RandomTesting extends LinearOpMode {
 
 
     // Try converting to DcMotorEx
@@ -84,6 +84,7 @@ public class TestEncoderAuto extends LinearOpMode {
         allMotors.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backMotors.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontMotors.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontMotors.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
@@ -96,52 +97,51 @@ public class TestEncoderAuto extends LinearOpMode {
 
         // testMotors((byte)1);
         // testMotors((byte)-1);
+        /*
         async.perpetual(() -> {
             if(lynx.getInputVoltage(VoltageUnit.VOLTS) < 10 ||
-                lynx.getCurrent(CurrentUnit.AMPS) > 18.69) {
+                    lynx.getCurrent(CurrentUnit.AMPS) > 18.69) {
                 allMotors.off();
             }
         });
-
+*/
         while(opModeIsActive()) {
 
-            // bootleg.differentialRight(20 , 22 , -0.5);
+            bootleg.differentialLeft(6 , 50 , -0.75);
 
-            encoderTurn(60);
-            customaryMove(18 , 0.6);
+            sleep(1000);
 
-            /*
-            flywheel.setPower(-0.6);
-            sleep(3000);
-            flywheel.setPower(0);
-            */
+            encoderTurn( 900);
 
-            sleep(3000);
+            customaryMove(4 , 0.5);
 
-            encoderTurn(-70);
+            customaryMove(-32 , -0.75);
+
+            encoderTurn(-700);
+
+            customaryMove(-4 , -0.6);
 
 
-            async.setTimeout(() -> {
-                slides.setTargetPosition(-3200);
-                slides.setPower(-0.7);
-                slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                sleep(4000);
-                slides.setPower(0);
-            } , 2000);
-
-            customaryMove(-36 , -1.0);
-            encoderTurn(-600);
-            customaryMove(-18 , -0.6);
+            slides.setTargetPosition(-3200);
+            slides.setPower(0.9);
+            slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             sleep(4000);
+            slides.setPower(0);
+            outtake.setPosition(0.7);
+            sleep(1000);
+            outtake.setPosition(0.2);
+
+            customaryMove(4 , 0.6);
+
+            encoderTurn(650);
+
+            WEEEEEEEEEEEEEEE(3200);
 
             slides.setTargetPosition(0);
             slides.setPower(0.4);
             slides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            sleep(3000);
-
-            encoderTurn(700);
-
-            customaryMove(-48 , -1.0);
+            sleep(4000);
+            slides.setPower(0);
 
             while(opModeIsActive()) {}
 
@@ -181,13 +181,11 @@ public class TestEncoderAuto extends LinearOpMode {
         frontMotors.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         // while(frontMotors.isBusy()) allTelemetry();
         allTelemetry();
-        sleep(800 + ((position * negCorrect) / 2));
+        sleep(800 + ((position * negCorrect)));
 
         allMotors.off();
         frontMotors.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
         allTelemetry();
-        sleep(200);
     }
 
     /**

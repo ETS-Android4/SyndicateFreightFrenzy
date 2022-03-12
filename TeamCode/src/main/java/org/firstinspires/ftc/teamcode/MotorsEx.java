@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -152,5 +154,24 @@ public class MotorsEx implements IMotorMethods {
             else if(difference <= 10)
                 motor.setPower(0);
         }
+    }
+
+    // DcMotorEx setVelocity (Ticks / sec)
+    public void setVelocity(double angularRate) {
+        for(DcMotorEx motor : motors)
+            motor.setVelocity(angularRate);
+    }
+
+    // DcMotorEx setVelocity (Units / sec)
+    public void setVelocity(double angularRate , AngleUnit angleUnit) {
+        for(DcMotorEx motor : motors)
+            motor.setVelocity(angularRate , angleUnit);
+    }
+
+    public double getAverageVelocity() {
+        double total = 0;
+        for(DcMotorEx motor : motors)
+            total += motor.getVelocity();
+        return total / motors.length;
     }
 }

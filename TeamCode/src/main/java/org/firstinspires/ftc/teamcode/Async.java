@@ -7,12 +7,12 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Async {
     private Telemetry telemetry;
-    private LinearOpMode opmode;
+    private LinearOpMode opMode;
 
     public Async(Telemetry telemetry,
-                 LinearOpMode opmode) {
+                 LinearOpMode opMode) {
         this.telemetry = telemetry;
-        this.opmode = opmode;
+        this.opMode = opMode;
     }
 
     /**
@@ -42,9 +42,9 @@ public class Async {
      */
     public void perpetual(Runnable runnable) {
         new Thread(() -> {
-            while(opmode.opModeIsActive()) {
+            while(opMode.opModeIsActive()) {
                 try {
-                    while (opmode.opModeIsActive()) {
+                    while (opMode.opModeIsActive()) {
                         runnable.run();
                     }
                 } catch (Exception e) {

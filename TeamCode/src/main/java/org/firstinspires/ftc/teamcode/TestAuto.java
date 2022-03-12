@@ -135,8 +135,8 @@ public class TestAuto extends LinearOpMode {
         FR.setTargetPosition(-position);
         FL.setTargetPosition(position);
 
-        leftMotors.setPower(1.0  * negCorrect);
-        rightMotors.setPower(-1.0  * negCorrect);
+        leftMotors.setPower(negCorrect);
+        rightMotors.setPower(negCorrect);
 
         frontMotors.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         // while(frontMotors.isBusy()) allTelemetry();
