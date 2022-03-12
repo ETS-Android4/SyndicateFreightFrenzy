@@ -16,9 +16,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 public class PicturePipeline extends OpenCvPipeline {
 
     //The submats are the 3 sections of the original mat.
-    private Mat submat1;
-    private Mat submat2;
-    private Mat submat3;
+    private Mat submat1, submat2, submat3;
 
     //Gray version of the input mat.
     private Mat gray = new Mat();

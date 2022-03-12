@@ -14,6 +14,10 @@ import org.checkerframework.checker.units.qual.A;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvInternalCamera;
 
 
 // ****READ QUALCOMM PACKAGE Docs
@@ -23,6 +27,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 
 public class BluePositionOne extends LinearOpMode {
 
+    //Constants for the webcam width and height
+    private static final int WEBCAM_WIDTH = 864;
+    private static final int WEBCAM_HEIGHT = 480;
+
+    //Webcam
+    private OpenCvCamera webcam;
 
     // Try converting to DcMotorEx
     private DcMotorEx FL, FR, BL, BR, armMotor, flywheel , slides;
@@ -89,6 +99,30 @@ public class BluePositionOne extends LinearOpMode {
         slides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         bootleg = new Differential(leftMotors , rightMotors , allMotors , this);
+
+
+
+        //Just copy paste this part
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        webcam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+
+        //Also copy paste this
+        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                webcam.startStreaming(WEBCAM_WIDTH, WEBCAM_HEIGHT, OpenCvCameraRotation.SIDEWAYS_LEFT);
+            }
+
+            @Override
+            public void onError(int errorCode) {
+
+            }
+        });
+
+        //Sets the pipeline
+        PicturePipeline pipeline = new PicturePipeline();
+        webcam.setPipeline(pipeline);
+
 //-----------------------------------------------------------------------------
 //---------------------------------AUTON START---------------------------------
 //-----------------------------------------------------------------------------
@@ -104,7 +138,13 @@ public class BluePositionOne extends LinearOpMode {
                 allMotors.off();
             }
         });
+
 */
+
+        int barcodeLevel = pipeline.getBarcodeLevel();
+        webcam.stopStreaming();
+
+
         while(opModeIsActive()) {
 
             bootleg.differentialLeft(6 , 50 , 0.75);

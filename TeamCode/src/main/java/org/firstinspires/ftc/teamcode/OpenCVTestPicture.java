@@ -55,8 +55,13 @@ public class OpenCVTestPicture extends LinearOpMode {
 
         if(isStopRequested()) return;
 
+        int barcodeLevel = pipeline.getBarcodeLevel();
+        webcam.stopStreaming();
+
         while(opModeIsActive()) {
             //Once you get the barcode level, make sure to stop streaming!!!
+            telemetry.addData("Position", barcodeLevel);
+            telemetry.update();
         }
 
 
