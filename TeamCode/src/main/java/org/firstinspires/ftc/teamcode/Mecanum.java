@@ -18,26 +18,11 @@ public class MecanumDrive extends OpMode {
 
    //declaring local variables
    private DcMotor frontLeft, frontRight, backRight, backLeft, armMotor, flywheel, slides;
-   private Servo gripperServo;
-
-   //some necessary constants
-   double GRIPPER_SPEED;
-
-   {
-       GRIPPER_SPEED = 0.5;
-   }
-
-   double gripperOffset = 0.5;
-   public ElapsedTime runtime = new ElapsedTime();
-
-   public TankDrive(DcMotor slides) {
-       this.slides = slides;
-   }
 
 
    @Override
    public void start() {
-       runtime.reset();
+  
    }
 
    //the code will loop through the content of this method and keep checking controller inputs
