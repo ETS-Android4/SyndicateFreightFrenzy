@@ -35,7 +35,7 @@ public class MaskPicturePipeline extends OpenCvPipeline {
 
         Mat mask = new Mat();
 
-        int low = 100; //TEST THIS!!!!
+        int low = 150; //TEST THIS!!!!
         Scalar lowerBound = new Scalar(low, low, low);
         Scalar upperBound = new Scalar(255, 255, 255);
 
